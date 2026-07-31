@@ -6,8 +6,15 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-// Origine(s) autorisée(s) pour le CORS, configurable via .env.
-// Supporte une liste séparée par des virgules pour gérer plusieurs
+// ---- Fix DNS SRV Atlas (ECONNREFUSED querySrv) ----
+// Force Node a utiliser un DNS public au lieu du DNS Windows/reseau local,
+// qui echoue parfois sur les requetes SRV (mongodb+srv://) meme quand
+// nslookup fonctionne. Voir : github.com/nodejs/node/issues (dns c-ares).
+const dns = require("dns");
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
+
+// Origine(s) autorisÃƒÂ©e(s) pour le CORS, configurable via .env.
+// Supporte une liste sÃƒÂ©parÃƒÂ©e par des virgules pour gÃƒÂ©rer plusieurs
 // environnements (ex: front local + front en prod).
 const corsOrigins = (process.env.CORS_ORIGIN || "http://localhost:3000")
   .split(",")
@@ -61,12 +68,12 @@ io.use((socket, next) => {
     socket.user = { id: decoded.id, isAdmin: !!decoded.isAdmin };
     next();
   } catch (err) {
-    next(new Error("Session invalide ou expirée"));
+    next(new Error("Session invalide ou expirÃƒÂ©e"));
   }
 });
 
 io.on("connection", (socket) => {
-  console.log("Socket connecté:", socket.id, socket.user.isAdmin ? "(admin)" : "");
+  console.log("Socket connectÃƒÂ©:", socket.id, socket.user.isAdmin ? "(admin)" : "");
 
   socket.on("join", () => {
     if (socket.user.isAdmin) return; // un admin n'a pas de room "client"
@@ -232,7 +239,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("Socket déconnecté:", socket.id);
+    console.log("Socket dÃƒÂ©connectÃƒÂ©:", socket.id);
     const { userId, isAdmin } = socket.data;
     if (userId && onlineClients.has(userId)) {
       onlineClients.get(userId).delete(socket.id);
@@ -250,13 +257,13 @@ io.on("connection", (socket) => {
   });
 });
 
-app.get("/", (req, res) => res.send("🚀 Backend MoneyGreen2 fonctionne !"));
+app.get("/", (req, res) => res.send("Ã°Å¸Å¡â‚¬ Backend MoneyGreen2 fonctionne !"));
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("✅ MongoDB connecté");
-    server.listen(process.env.PORT || 5000, () => {
-      console.log("🚀 Serveur lancé sur le port 5000");
+    console.log("Ã¢Å“â€¦ MongoDB connectÃƒÂ©");
+    server.listen(process.env.PORT || 5000, "0.0.0.0", () => {
+      console.log("Ã°Å¸Å¡â‚¬ Serveur lancÃƒÂ© sur le port 5000");
     });
   })
   .catch((err) => console.error("Erreur MongoDB:", err));
