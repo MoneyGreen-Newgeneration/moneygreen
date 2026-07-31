@@ -18,7 +18,6 @@ export default function ChatWidget() {
     open,
     setOpen,
     messages,
-    setMessages,
     text,
     uploading,
     adminOnline,
@@ -137,7 +136,7 @@ export default function ChatWidget() {
         </div>
       )}
       <button className="chat-bubble" onClick={() => setOpen(o => !o)}>
-        {open ? "✕" : "💬"}
+        {open ? "âœ•" : "ðŸ’¬"}
         {!open && unreadCount > 0 && (
           <span className="chat-badge">{unreadCount > 9 ? "9+" : unreadCount}</span>
         )}
