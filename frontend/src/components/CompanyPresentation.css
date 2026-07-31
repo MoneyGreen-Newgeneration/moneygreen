@@ -1,0 +1,345 @@
+.company-pres {
+  background: #ffffff;
+  border: 1px solid rgba(28, 31, 29, 0.08);
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 14px 34px rgba(28, 31, 29, 0.05);
+}
+
+.company-pres-header {
+  text-align: center;
+  padding-bottom: 1.8rem;
+  margin-bottom: 2.2rem;
+  border-bottom: 1px solid rgba(28, 31, 29, 0.1);
+}
+
+.company-pres-name {
+  font-family: "Archivo", "Inter", sans-serif;
+  font-weight: 900;
+  font-size: 2rem;
+  letter-spacing: 0.02em;
+  color: #15602b;
+  text-transform: uppercase;
+  margin: 0 0 0.4rem;
+}
+
+.company-pres-tagline {
+  font-family: "Archivo", "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1e8a3e;
+  margin: 0 0 1.1rem;
+}
+
+.company-pres-locations {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem 1.6rem;
+}
+
+.company-pres-locations p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: rgba(26, 29, 27, 0.85);
+}
+
+.company-pres-locations strong {
+  color: #1c1f1d;
+}
+
+/* --- Corps tronque / pagine (meme logique que privacy-notice) --- */
+
+.company-pres-body {
+  position: relative;
+}
+
+.company-pres-body-collapsed {
+  max-height: 640px;
+  overflow: hidden;
+}
+
+.company-pres-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #ffffff);
+  pointer-events: none;
+}
+
+.company-pres-flow-title {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 2.2rem 0 0.7rem;
+}
+
+.company-pres-flow-title:first-child {
+  margin-top: 0;
+}
+
+.company-pres-icon {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--mg-green-bright, #3fc466), var(--mg-green, #1e8a3e));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.company-pres-icon-svg {
+  width: 22px;
+  height: 22px;
+  color: #ffffff;
+}
+
+.company-pres-flow-title h3 {
+  font-family: "Archivo", "Inter", sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #1c1f1d;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.company-pres-indent {
+  padding-left: calc(42px + 0.8rem);
+}
+
+.company-pres-text {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: rgba(26, 29, 27, 0.8);
+  margin: 0 0 0.7rem;
+}
+
+.company-pres-list {
+  margin: 0.4rem 0 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.company-pres-list li {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: rgba(26, 29, 27, 0.8);
+}
+
+.company-pres-steps {
+  margin: 0 0 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.company-pres-steps li {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: rgba(26, 29, 27, 0.8);
+}
+
+.company-pres-steps li strong {
+  color: #1c1f1d;
+}
+
+.company-pres-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.9rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border: 1.5px solid #1e8a3e;
+  cursor: pointer;
+  background: transparent;
+  color: #1e8a3e;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.company-pres-toggle:hover {
+  background: #1e8a3e;
+  color: #fff;
+}
+
+/* --- Informations cles + footer (toujours visibles) --- */
+
+.company-pres-keyinfo {
+  margin-top: 2.4rem;
+  border: 1px solid rgba(30, 138, 62, 0.25);
+  border-radius: 16px;
+  padding: 1.4rem 1.6rem;
+  background: rgba(30, 138, 62, 0.04);
+}
+
+.company-pres-keyinfo-title {
+  margin: 0 0 1rem;
+  font-family: "Archivo", "Inter", sans-serif;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #15602b;
+}
+
+.company-pres-keyinfo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1.2rem;
+}
+
+.company-pres-keyinfo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.company-pres-keyinfo-icon {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid rgba(30, 138, 62, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.company-pres-keyinfo-icon .company-pres-icon-svg {
+  width: 17px;
+  height: 17px;
+  color: #1e8a3e;
+}
+
+.company-pres-keyinfo-item span:last-child {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: rgba(26, 29, 27, 0.85);
+}
+
+.company-pres-keyinfo-item strong {
+  color: #1c1f1d;
+}
+
+.company-pres-footer {
+  text-align: center;
+  margin-top: 2.4rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid rgba(28, 31, 29, 0.1);
+}
+
+.company-pres-footer-main {
+  margin: 0 0 0.3rem;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #15602b;
+}
+
+.company-pres-footer-sub {
+  margin: 0;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: rgba(26, 29, 27, 0.6);
+}
+
+@media (max-width: 640px) {
+  .company-pres {
+    padding: 2.2rem 1.3rem;
+  }
+
+  .company-pres-name {
+    font-size: 1.5rem;
+  }
+
+  .company-pres-indent {
+    padding-left: 0;
+  }
+}
+
+/* Mode sombre */
+body.dark-mode .company-pres {
+  background: #1e2226;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .company-pres-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .company-pres-name,
+body.dark-mode .company-pres-tagline {
+  color: #3fc466;
+}
+
+body.dark-mode .company-pres-locations p {
+  color: rgba(230, 232, 234, 0.75);
+}
+
+body.dark-mode .company-pres-locations strong {
+  color: #e6e8ea;
+}
+
+body.dark-mode .company-pres-fade {
+  background: linear-gradient(to bottom, rgba(30, 34, 38, 0), #1e2226);
+}
+
+body.dark-mode .company-pres-flow-title h3 {
+  color: #e6e8ea;
+}
+
+body.dark-mode .company-pres-text,
+body.dark-mode .company-pres-list li,
+body.dark-mode .company-pres-steps li {
+  color: rgba(230, 232, 234, 0.75);
+}
+
+body.dark-mode .company-pres-steps li strong {
+  color: #e6e8ea;
+}
+
+body.dark-mode .company-pres-keyinfo {
+  background: rgba(63, 196, 102, 0.06);
+  border-color: rgba(63, 196, 102, 0.25);
+}
+
+body.dark-mode .company-pres-keyinfo-title {
+  color: #3fc466;
+}
+
+body.dark-mode .company-pres-keyinfo-icon {
+  background: #262b30;
+  border-color: rgba(63, 196, 102, 0.3);
+}
+
+body.dark-mode .company-pres-keyinfo-icon .company-pres-icon-svg {
+  color: #3fc466;
+}
+
+body.dark-mode .company-pres-keyinfo-item span:last-child {
+  color: rgba(230, 232, 234, 0.8);
+}
+
+body.dark-mode .company-pres-keyinfo-item strong {
+  color: #e6e8ea;
+}
+
+body.dark-mode .company-pres-footer {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .company-pres-footer-main {
+  color: #3fc466;
+}
+
+body.dark-mode .company-pres-footer-sub {
+  color: rgba(230, 232, 234, 0.6);
+}

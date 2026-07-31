@@ -1,0 +1,191 @@
+.loan-simulator {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid rgba(28, 31, 29, 0.08);
+  padding: 1.8rem;
+  box-shadow: 0 10px 26px rgba(28, 31, 29, 0.05);
+  margin-bottom: 1.5rem;
+}
+
+.loan-simulator-title {
+  font-family: "Archivo", "Inter", sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #1c1f1d;
+  margin: 0 0 0.5rem;
+  text-transform: uppercase;
+}
+
+.loan-simulator-hint {
+  margin: 0 0 1.3rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(26, 29, 27, 0.6);
+}
+
+.loan-simulator-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.loan-simulator-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1c1f1d;
+}
+
+.loan-simulator-field input {
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 400;
+  padding: 0.7rem 0.9rem;
+  border-radius: 8px;
+  border: 1.5px solid rgba(28, 31, 29, 0.15);
+  background: #fff;
+  color: #1a1d1b;
+}
+
+.loan-simulator-field input:focus {
+  outline: 2px solid #1e8a3e;
+  outline-offset: 1px;
+}
+
+.loan-simulator-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.6rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  background: #1e8a3e;
+  color: #fff;
+  transition: background 0.2s ease, transform 0.2s ease;
+  height: fit-content;
+}
+
+.loan-simulator-btn:hover {
+  background: #15602b;
+  transform: translateY(-1px);
+}
+
+.loan-simulator-result {
+  margin-top: 1.2rem;
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+}
+
+.loan-simulator-result-ok {
+  background: rgba(30, 138, 62, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.loan-simulator-result-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(26, 29, 27, 0.65);
+}
+
+.loan-simulator-result-value {
+  display: block;
+  font-family: "Archivo", "Inter", sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #15602b;
+}
+
+.loan-simulator-result-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.loan-simulator-result-secondary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.loan-simulator-result-value-secondary {
+  display: block;
+  font-family: "Archivo", "Inter", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1c1f1d;
+}
+
+.loan-simulator-apply-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border: 1.5px solid #1e8a3e;
+  cursor: pointer;
+  background: transparent;
+  color: #1e8a3e;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.loan-simulator-apply-btn:hover {
+  background: #1e8a3e;
+  color: #fff;
+}
+
+.loan-simulator-result-warning {
+  background: #fff8e1;
+  color: #8a6d00;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .loan-simulator-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+body.dark-mode .loan-simulator {
+  background: #1e2226;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .loan-simulator-title {
+  color: #e6e8ea;
+}
+
+body.dark-mode .loan-simulator-hint {
+  color: rgba(230, 232, 234, 0.6);
+}
+
+body.dark-mode .loan-simulator-field {
+  color: rgba(230, 232, 234, 0.85);
+}
+
+body.dark-mode .loan-simulator-field input {
+  background: #262b30;
+  color: #e6e8ea;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+body.dark-mode .loan-simulator-result-label {
+  color: rgba(230, 232, 234, 0.6);
+}
+
+body.dark-mode .loan-simulator-result-value-secondary {
+  color: #e6e8ea;
+}

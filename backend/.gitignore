@@ -1,0 +1,19 @@
+# Dependances
+node_modules/
+
+# Variables d'environnement et secrets (JWT_SECRET, MONGO_URI, CLOUDINARY_*, EMAIL_*)
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Backups generes par les scripts de patch
+*.bak
+*.bak_*
+
+# Divers
+.DS_Store

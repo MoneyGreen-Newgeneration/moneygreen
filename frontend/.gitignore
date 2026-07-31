@@ -1,0 +1,15 @@
+﻿# dependances
+/node_modules
+
+# variables d'environnement et secrets (JWT_SECRET, MONGO_URI, CLOUDINARY_*, EMAIL_*)
+.env
+.env.local
+.env.*.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# divers
+.DS_Store

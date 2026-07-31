@@ -1,0 +1,264 @@
+﻿.pay-page {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f3f6f4;
+  min-height: 100vh;
+  color: #1a1d1b;
+}
+
+.pay-container {
+  width: 92%;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.pay-header {
+  background: #1c1f1d;
+  padding: .9rem 0;
+}
+
+.pay-navbar {
+  max-width: 1280px;
+}
+
+.pay-logo {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  font-family: "Archivo", "Inter", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.pay-logo strong { color: #3fc466; }
+
+.pay-main {
+  padding: 3rem 0;
+}
+
+.pay-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid rgba(28,31,29,.08);
+  padding: 2rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,.06);
+}
+
+.pay-card h2 {
+  font-family: "Archivo", "Inter", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #1c1f1d;
+  margin-bottom: .5rem;
+}
+
+.pay-subtitle {
+  color: rgba(26,29,27,.6);
+  font-size: .9rem;
+  margin-bottom: 1.5rem;
+}
+
+.pay-enrollment-content {
+  margin-bottom: 1.5rem;
+}
+
+.pay-enrollment-p {
+  color: rgba(26,29,27,.75);
+  font-size: .92rem;
+  line-height: 1.55;
+  margin-bottom: .75rem;
+}
+
+.pay-enrollment-h4 {
+  font-family: "Archivo", "Inter", sans-serif;
+  font-size: .95rem;
+  font-weight: 800;
+  color: #1c1f1d;
+  margin: 1rem 0 .5rem;
+}
+
+.pay-enrollment-list {
+  margin: 0 0 .75rem;
+  padding-left: 1.2rem;
+  color: rgba(26,29,27,.75);
+  font-size: .9rem;
+  line-height: 1.6;
+}
+
+.pay-enrollment-list li {
+  margin-bottom: .35rem;
+}
+
+.pay-loading {
+  text-align: center;
+  color: rgba(26,29,27,.5);
+  padding: 2rem 0;
+}
+
+.pay-amount {
+  background: #f0fdf4;
+  border: 1.5px solid #1e8a3e;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.pay-amount-label {
+  font-size: .85rem;
+  font-weight: 600;
+  color: rgba(26,29,27,.6);
+}
+
+.pay-amount-value {
+  font-family: "Archivo", "Inter", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #1e8a3e;
+}
+
+.pay-error {
+  background: #fdecea;
+  color: #a32d2d;
+  border-radius: 8px;
+  padding: .75rem 1rem;
+  font-size: .88rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.pay-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+  margin-bottom: 1.5rem;
+}
+
+.pay-info-card {
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  border: 1.5px solid rgba(28,31,29,.1);
+  background: #f8faf9;
+}
+
+.pay-info-card-head {
+  margin-bottom: .5rem;
+}
+
+.pay-info-tag {
+  font-size: .72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #1c1f1d;
+  color: #fff;
+}
+
+.pay-info-mtn .pay-info-tag { background: #ffcc00; color: #1c1f1d; }
+.pay-info-orange .pay-info-tag { background: #ff7900; color: #fff; }
+.pay-info-account .pay-info-tag { background: #1e8a3e; color: #fff; }
+
+.pay-info-number {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1a1d1b;
+  margin-bottom: .2rem;
+  letter-spacing: .02em;
+}
+
+.pay-info-name {
+  font-size: .82rem;
+  color: rgba(26,29,27,.55);
+}
+
+.pay-note {
+  font-size: .82rem;
+  color: rgba(26,29,27,.55);
+  background: #fff8e1;
+  border-radius: 8px;
+  padding: .85rem 1rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.pay-btn {
+  width: 100%;
+  padding: .85rem;
+  background: #1e8a3e;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s;
+}
+
+.pay-btn:hover { background: #15602b; }
+.pay-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+/* ===== MODE SOMBRE ===== */
+body.dark-mode .pay-page {
+  background: #14171a;
+  color: #e6e8ea;
+}
+
+body.dark-mode .pay-card {
+  background: #1e2226;
+}
+
+body.dark-mode .pay-card h2 {
+  color: #e6e8ea;
+}
+
+body.dark-mode .pay-subtitle {
+  color: rgba(230,232,234,.6);
+}
+
+body.dark-mode .pay-enrollment-p {
+  color: rgba(230,232,234,.75);
+}
+
+body.dark-mode .pay-enrollment-h4 {
+  color: #e6e8ea;
+}
+
+body.dark-mode .pay-enrollment-list {
+  color: rgba(230,232,234,.75);
+}
+
+body.dark-mode .pay-loading {
+  color: rgba(230,232,234,.5);
+}
+
+body.dark-mode .pay-amount-label {
+  color: rgba(230,232,234,.6);
+}
+
+body.dark-mode .pay-section-title {
+  color: rgba(230,232,234,.55);
+}
+
+body.dark-mode .pay-info-card {
+  background: #262b30;
+}
+
+body.dark-mode .pay-info-number {
+  color: #e6e8ea;
+}
+
+body.dark-mode .pay-info-name {
+  color: rgba(230,232,234,.55);
+}
+
+body.dark-mode .pay-note {
+  color: rgba(230,232,234,.55);
+  background: #2a2410;
+}
+

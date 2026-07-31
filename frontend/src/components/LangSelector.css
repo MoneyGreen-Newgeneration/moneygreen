@@ -1,0 +1,63 @@
+﻿.lang-selector {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  background: rgba(255,255,255,.1);
+  border: 1.5px solid rgba(255,255,255,.2);
+  border-radius: 8px;
+  padding: .38rem .7rem;
+  font-size: .8rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: background .2s;
+  white-space: nowrap;
+}
+
+.lang-btn:hover { background: rgba(255,255,255,.2); }
+
+.lang-arrow {
+  font-size: .55rem;
+  opacity: .7;
+}
+
+.lang-dropdown {
+  background: #1e2226;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 10px;
+  padding: .4rem;
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+  z-index: 9999;
+  min-width: 140px;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0,0,0,.3);
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: .45rem .7rem;
+  font-size: .82rem;
+  font-weight: 600;
+  color: rgba(230,232,234,.8);
+  cursor: pointer;
+  transition: background .15s;
+  text-align: left;
+  width: 100%;
+}
+
+.lang-option:hover { background: rgba(255,255,255,.08); color: #fff; }
+.lang-option.active { background: rgba(63,196,102,.15); color: #3fc466; }
+
