@@ -1,4 +1,4 @@
-﻿export default function LoanIllustration({ type }) {
+export default function LoanIllustration({ type }) {
   if (type === "auto") return (
     <svg width="100%" viewBox="0 0 400 160" aria-hidden="true" style={{display:"block"}}>
       <rect x="0" y="0" width="400" height="160" rx="12" fill="#1c1f1d"/>

@@ -1,4 +1,4 @@
-﻿const FLAGS = {
+const FLAGS = {
   fr: (
     <svg viewBox="0 0 3 2" width="20" height="14">
       <rect width="1" height="2" fill="#002395"/>

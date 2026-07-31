@@ -1,4 +1,4 @@
-﻿import api from "./axios";
+import api from "./axios";
 
 export async function createLoan(payload) {
   const res = await api.post("/loans", payload);

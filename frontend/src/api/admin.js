@@ -1,4 +1,4 @@
-﻿import api from "./axios";
+import api from "./axios";
 
 export const fetchStats = () => api.get("/admin/stats").then(r => r.data);
 export const fetchAllUsers = () => api.get("/admin/users").then(r => r.data);

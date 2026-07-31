@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useLang } from "../context/LangContext";
 import "./LangSelector.css";
 import Flag from "./Flag";

@@ -1,4 +1,4 @@
-﻿export default function MoneyGreenMark({ size = 36, bg = "#1E8A3E", fg = "#FFFFFF" }) {
+export default function MoneyGreenMark({ size = 36, bg = "#1E8A3E", fg = "#FFFFFF" }) {
   return (
     <svg
       width={size}

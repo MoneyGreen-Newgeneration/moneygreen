@@ -1,4 +1,4 @@
-﻿import LoanPage from "./LoanPage";
+import LoanPage from "./LoanPage";
 import {
   IconIdCard,
   IconPayslip,

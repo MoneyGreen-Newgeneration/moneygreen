@@ -1,4 +1,4 @@
-﻿function IconBase({ children, size = 32 }) {
+function IconBase({ children, size = 32 }) {
   return (
     <svg
       width={size}
