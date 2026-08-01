@@ -1,3 +1,36 @@
+<#
+    Fix : Structure JSX cassee + icones dans ChatWidget.js
+    --------------------------------------------------------------
+    Le fichier avait un bloc JSX corrompu (le conteneur qui affiche
+    le panneau de chat quand il est ouvert avait ete remplace par du
+    texte d'icone mal encode, casse depuis une edition anterieure -
+    pas seulement l'icone du bouton flottant).
+    Ce script reecrit le fichier entier proprement.
+
+    A executer depuis la racine du dossier frontend/
+#>
+
+$ErrorActionPreference = "Stop"
+
+$TargetFile = Join-Path $PSScriptRoot "src\components\chat\ChatWidget.js"
+
+if (-not (Test-Path $TargetFile)) {
+    Write-Host "Fichier introuvable : $TargetFile" -ForegroundColor Red
+    Write-Host "Execute ce script depuis le dossier frontend/ (celui qui contient src/)." -ForegroundColor Yellow
+    exit 1
+}
+
+# --- Backup horodate ---
+$Timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+$BackupPath = "$TargetFile.bak_$Timestamp"
+Copy-Item $TargetFile $BackupPath
+Write-Host "Backup cree : $(Split-Path $BackupPath -Leaf)" -ForegroundColor Green
+
+# --- Icones construites via code Unicode (fiable) ---
+$closeIcon = [System.Char]::ConvertFromUtf32(0x2715)     # close (X)
+$bubbleIcon = [System.Char]::ConvertFromUtf32(0x1F4AC)   # chat bubble
+
+$template = @'
 import { useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useLang } from "../../context/LangContext";
@@ -138,7 +171,7 @@ export default function ChatWidget() {
         </div>
       )}
       <button className="chat-bubble" onClick={() => setOpen(o => !o)}>
-        {open ? "✕" : "💬"}
+        __ICON__
         {!open && unreadCount > 0 && (
           <span className="chat-badge">{unreadCount > 9 ? "9+" : unreadCount}</span>
         )}
@@ -146,3 +179,26 @@ export default function ChatWidget() {
     </div>
   );
 }
+'@
+
+$iconExpr = '{open ? "' + $closeIcon + '" : "' + $bubbleIcon + '"}'
+$finalContent = $template.Replace('__ICON__', $iconExpr)
+$finalContent = ($finalContent -replace "`r`n", "`n")
+
+# --- Ecriture UTF-8 sans BOM, LF ---
+[System.IO.File]::WriteAllText($TargetFile, $finalContent, (New-Object System.Text.UTF8Encoding($false)))
+
+Write-Host "ChatWidget.js reecrit proprement (structure + icones corrigees)" -ForegroundColor Green
+Write-Host ""
+Write-Host "IMPORTANT : ce script suppose que la structure ci-dessus (panneau" -ForegroundColor Yellow
+Write-Host "visible uniquement quand 'open' est vrai) correspond a ton intention" -ForegroundColor Yellow
+Write-Host "d'origine. Verifie visuellement apres deploiement que le chat" -ForegroundColor Yellow
+Write-Host "s'affiche/se cache correctement au clic sur la bulle." -ForegroundColor Yellow
+Write-Host ""
+Write-Host "En cas de probleme, restaure avec :" -ForegroundColor Yellow
+Write-Host "  Copy-Item '$BackupPath' '$TargetFile' -Force"
+Write-Host ""
+Write-Host "Prochaine etape : commit + push pour relancer le build Vercel." -ForegroundColor Cyan
+Write-Host "  git add ."
+Write-Host "  git commit -m fix-chatwidget-structure"
+Write-Host "  git push"
