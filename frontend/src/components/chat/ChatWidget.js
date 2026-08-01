@@ -90,42 +90,40 @@ export default function ChatWidget() {
       {open && (
         <div className="chat-overlay" onClick={() => setOpen(false)} />
       )}
-      {open && (
-        <div className="chat-panel">
-          <ChatHeader
-            adminOnline={adminOnline}
-            adminLastSeen={adminLastSeen}
-            formatLastSeen={formatLastSeen}
-            onClose={() => setOpen(false)}
-            t={t}
-          />
-          <ChatMessages
-            messages={messages}
-            adminTyping={adminTyping}
-            uploading={uploading}
-            bottomRef={bottomRef}
-            messagesContainerRef={messagesContainerRef}
-            setReplyingTo={setReplyingTo}
-            handleDelete={handleDelete}
-            t={t}
-          />
-          <ReplyPreview
-            replyingTo={replyingTo}
-            onCancel={() => setReplyingTo(null)}
-          />
-          <ChatInput
-            text={text}
-            setText={handleTextChange}
-            handleKey={handleKey}
-            handlePickImage={handlePickImage}
-            handleFileChange={handleFileChange}
-            handleSend={sendMessage}
-            uploading={uploading}
-            fileInputRef={fileInputRef}
-            t={t}
-          />
-        </div>
-      )}
+      <div className={`chat-panel${open ? " chat-panel-open" : ""}`}>
+        <ChatHeader
+          adminOnline={adminOnline}
+          adminLastSeen={adminLastSeen}
+          formatLastSeen={formatLastSeen}
+          onClose={() => setOpen(false)}
+          t={t}
+        />
+        <ChatMessages
+          messages={messages}
+          adminTyping={adminTyping}
+          uploading={uploading}
+          bottomRef={bottomRef}
+          messagesContainerRef={messagesContainerRef}
+          setReplyingTo={setReplyingTo}
+          handleDelete={handleDelete}
+          t={t}
+        />
+        <ReplyPreview
+          replyingTo={replyingTo}
+          onCancel={() => setReplyingTo(null)}
+        />
+        <ChatInput
+          text={text}
+          setText={handleTextChange}
+          handleKey={handleKey}
+          handlePickImage={handlePickImage}
+          handleFileChange={handleFileChange}
+          handleSend={sendMessage}
+          uploading={uploading}
+          fileInputRef={fileInputRef}
+          t={t}
+        />
+      </div>
       {confirmDelete && (
         <div className="chat-confirm-overlay">
           <div className="chat-confirm-box">

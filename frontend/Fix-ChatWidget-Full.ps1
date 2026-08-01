@@ -123,42 +123,40 @@ export default function ChatWidget() {
       {open && (
         <div className="chat-overlay" onClick={() => setOpen(false)} />
       )}
-      {open && (
-        <div className="chat-panel">
-          <ChatHeader
-            adminOnline={adminOnline}
-            adminLastSeen={adminLastSeen}
-            formatLastSeen={formatLastSeen}
-            onClose={() => setOpen(false)}
-            t={t}
-          />
-          <ChatMessages
-            messages={messages}
-            adminTyping={adminTyping}
-            uploading={uploading}
-            bottomRef={bottomRef}
-            messagesContainerRef={messagesContainerRef}
-            setReplyingTo={setReplyingTo}
-            handleDelete={handleDelete}
-            t={t}
-          />
-          <ReplyPreview
-            replyingTo={replyingTo}
-            onCancel={() => setReplyingTo(null)}
-          />
-          <ChatInput
-            text={text}
-            setText={handleTextChange}
-            handleKey={handleKey}
-            handlePickImage={handlePickImage}
-            handleFileChange={handleFileChange}
-            handleSend={sendMessage}
-            uploading={uploading}
-            fileInputRef={fileInputRef}
-            t={t}
-          />
-        </div>
-      )}
+      <div className={`chat-panel${open ? " chat-panel-open" : ""}`}>
+        <ChatHeader
+          adminOnline={adminOnline}
+          adminLastSeen={adminLastSeen}
+          formatLastSeen={formatLastSeen}
+          onClose={() => setOpen(false)}
+          t={t}
+        />
+        <ChatMessages
+          messages={messages}
+          adminTyping={adminTyping}
+          uploading={uploading}
+          bottomRef={bottomRef}
+          messagesContainerRef={messagesContainerRef}
+          setReplyingTo={setReplyingTo}
+          handleDelete={handleDelete}
+          t={t}
+        />
+        <ReplyPreview
+          replyingTo={replyingTo}
+          onCancel={() => setReplyingTo(null)}
+        />
+        <ChatInput
+          text={text}
+          setText={handleTextChange}
+          handleKey={handleKey}
+          handlePickImage={handlePickImage}
+          handleFileChange={handleFileChange}
+          handleSend={sendMessage}
+          uploading={uploading}
+          fileInputRef={fileInputRef}
+          t={t}
+        />
+      </div>
       {confirmDelete && (
         <div className="chat-confirm-overlay">
           <div className="chat-confirm-box">
@@ -190,10 +188,9 @@ $finalContent = ($finalContent -replace "`r`n", "`n")
 
 Write-Host "ChatWidget.js reecrit proprement (structure + icones corrigees)" -ForegroundColor Green
 Write-Host ""
-Write-Host "IMPORTANT : ce script suppose que la structure ci-dessus (panneau" -ForegroundColor Yellow
-Write-Host "visible uniquement quand 'open' est vrai) correspond a ton intention" -ForegroundColor Yellow
-Write-Host "d'origine. Verifie visuellement apres deploiement que le chat" -ForegroundColor Yellow
-Write-Host "s'affiche/se cache correctement au clic sur la bulle." -ForegroundColor Yellow
+Write-Host "Fix applique : le panneau est desormais toujours monte dans le DOM," -ForegroundColor Cyan
+Write-Host "et bascule via la classe CSS chat-panel-open (comme prevu par Chat.css," -ForegroundColor Cyan
+Write-Host "qui gere l'animation de glissement avec transform/transition)." -ForegroundColor Cyan
 Write-Host ""
 Write-Host "En cas de probleme, restaure avec :" -ForegroundColor Yellow
 Write-Host "  Copy-Item '$BackupPath' '$TargetFile' -Force"
