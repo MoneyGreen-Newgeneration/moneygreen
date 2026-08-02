@@ -145,6 +145,21 @@ export default function Dashboard() {
       <main className="dash-container dash-main">
         {error && <p className="dash-alert">{error}</p>}
 
+        {!loading && loans.length === 0 && transactions.length === 0 && (
+          <section className="dash-welcome-banner">
+            <div className="dash-welcome-text">
+              <h2>{t("dash_welcome_title")}</h2>
+              <p>{t("dash_welcome_text")}</p>
+            </div>
+            <div className="dash-welcome-links">
+              <Link to="/prets/auto" className="dash-welcome-link">{t("loan_auto_title")}</Link>
+              <Link to="/prets/immobilier" className="dash-welcome-link">{t("loan_immo_title")}</Link>
+              <Link to="/prets/scolaire" className="dash-welcome-link">{t("loan_sco_title")}</Link>
+              <Link to="/prets/personnel" className="dash-welcome-link">{t("loan_per_title")}</Link>
+            </div>
+          </section>
+        )}
+
         <section className="dash-balance-grid">
           <div className="dash-card dash-card-balance">
             <span className="dash-card-label">{t("dash_balance")}</span>

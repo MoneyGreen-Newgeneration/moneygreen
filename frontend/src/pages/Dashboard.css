@@ -1,4 +1,4 @@
-﻿.dash {
+.dash {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: #f3f6f4;
   min-height: 100vh;
@@ -646,4 +646,55 @@ body.dark-mode .dash-username-mobile {
     height: 46px;
     font-size: 1.3rem;
   }
+}
+
+
+.dash-welcome-banner {
+  background: linear-gradient(135deg, #1e8a3e, #146b30);
+  color: #fff;
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.dash-welcome-text h2 {
+  margin: 0 0 6px;
+  font-size: 1.3rem;
+}
+
+.dash-welcome-text p {
+  margin: 0;
+  opacity: .9;
+  font-size: .95rem;
+}
+
+.dash-welcome-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.dash-welcome-link {
+  background: rgba(255,255,255,.16);
+  color: #fff;
+  text-decoration: none;
+  padding: 9px 16px;
+  border-radius: 20px;
+  font-size: .85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background .15s ease;
+}
+
+.dash-welcome-link:hover {
+  background: rgba(255,255,255,.3);
+}
+
+@media (max-width: 640px) {
+  .dash-welcome-banner { flex-direction: column; align-items: flex-start; padding: 20px; }
 }
