@@ -1,3 +1,29 @@
+<#
+    Fix : Garder le texte "Demander un pret" visible en mobile
+    --------------------------------------------------------------
+    Version robuste : reecrit le fichier CSS entier (au lieu d'un
+    patch par correspondance de bloc, fragile face aux differences
+    de fin de ligne CRLF/LF entre systemes).
+
+    A executer depuis la racine du dossier frontend/
+#>
+
+$ErrorActionPreference = "Stop"
+
+$TargetFile = Join-Path $PSScriptRoot "src\components\LoanRequestButton.css"
+
+if (-not (Test-Path $TargetFile)) {
+    Write-Host "Fichier introuvable : $TargetFile" -ForegroundColor Red
+    Write-Host "Execute ce script depuis le dossier frontend/ (celui qui contient src/)." -ForegroundColor Yellow
+    exit 1
+}
+
+$Timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+$BackupPath = "$TargetFile.bak_$Timestamp"
+Copy-Item $TargetFile $BackupPath
+Write-Host "Backup cree : $(Split-Path $BackupPath -Leaf)" -ForegroundColor Green
+
+$correctContent = @'
 .loan-request-widget {
   position: fixed;
   bottom: 100px;
@@ -125,3 +151,17 @@ body.dark-mode .loan-request-menu-item:hover {
   .loan-request-icon { width: 20px; height: 20px; font-size: .95rem; }
   .loan-request-menu { width: calc(100vw - 32px); min-width: 0; }
 }
+'@
+
+$normalized = $correctContent -replace "`r`n", "`n"
+[System.IO.File]::WriteAllText($TargetFile, $normalized, (New-Object System.Text.UTF8Encoding($false)))
+
+Write-Host "LoanRequestButton.css reecrit : texte visible sur mobile" -ForegroundColor Green
+Write-Host ""
+Write-Host "En cas de probleme, restaure avec :" -ForegroundColor Yellow
+Write-Host "  Copy-Item '$BackupPath' '$TargetFile' -Force"
+Write-Host ""
+Write-Host "Prochaine etape : commit + push pour relancer le build Vercel." -ForegroundColor Cyan
+Write-Host "  git add ."
+Write-Host "  git commit -m fix-loan-button-mobile-label"
+Write-Host "  git push"
