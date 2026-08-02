@@ -57,7 +57,7 @@ export default function Register() {
         </label>
         <label style={styles.label}>
           {t("register_phone")}
-          <input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} style={styles.input} />
+          <input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} style={styles.input} required placeholder="+237 6XX XXX XXX" />
         </label>
         <label style={styles.label}>
           {t("register_password")}

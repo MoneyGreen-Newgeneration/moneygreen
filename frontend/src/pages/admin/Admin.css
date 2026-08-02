@@ -643,3 +643,21 @@ body.dark-mode .adm-chat-placeholder {
 @media (max-width: 600px) {
   .adm-team-chat { grid-template-rows: 1fr !important; }
 }
+
+.adm-btn-whatsapp {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: #25D366;
+  color: #fff;
+  border: none;
+  font-size: .82rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.adm-btn-whatsapp:disabled {
+  background: #b9b9b9;
+  cursor: not-allowed;
+}

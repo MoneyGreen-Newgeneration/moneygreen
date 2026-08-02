@@ -140,6 +140,15 @@ export default function Admin() {
 
   useEffect(() => { loadAll(); }, [loadAll]);
 
+  const buildWhatsAppLink = (u) => {
+    if (!u.phoneNumber) return null;
+    const digits = u.phoneNumber.replace(/[^\d]/g, "");
+    const message = encodeURIComponent(
+      `Bonjour ${u.username}, c'est la reception administrative MoneyGreen ! Nous vous attendons  sur la plateforme pour un entretien.` : https://moneygreeny.vercel.app`
+    );
+    return `https://wa.me/${digits}?text=${message}`;
+  };
+
   const handleToggleAdmin = async (id) => {
     setUpdating(id);
     try {
@@ -456,6 +465,20 @@ export default function Admin() {
                           >
                             {u.isAdmin ? t("adm_btn_remove_admin") : t("adm_btn_promote_admin")}
                           </button>
+                          {buildWhatsAppLink(u) ? (
+                            <a
+                              href={buildWhatsAppLink(u)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="adm-btn-whatsapp"
+                            >
+                              {t("adm_btn_whatsapp")}
+                            </a>
+                          ) : (
+                            <button className="adm-btn-whatsapp" disabled title="Aucun numero WhatsApp">
+                              {t("adm_btn_whatsapp")}
+                            </button>
+                          )}
                         </td>
                       </tr>
                     ))}
