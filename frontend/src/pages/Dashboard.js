@@ -15,6 +15,7 @@ import MoneyGreenMark from "../components/MoneyGreenMark";
 import DarkModeToggle from "../components/DarkModeToggle";
 import LangSelector from "../components/LangSelector";
 import ChatWidget from "../components/chat/ChatWidget";
+import LoanRequestButton from "../components/LoanRequestButton";
 import { SOCKET_URL } from "../config";
 import "./Dashboard.css";
 
@@ -50,7 +51,7 @@ export default function Dashboard() {
       setTransactions(transactionsData);
       setLoans(loansData);
     } catch (err) {
-      setError("Impossible de charger vos données pour le moment.");
+      setError("Impossible de charger vos donnÃ©es pour le moment.");
     } finally {
       setLoading(false);
     }
@@ -62,9 +63,9 @@ export default function Dashboard() {
     if (!userId) return;
     const token = localStorage.getItem("token");
     // Le serveur exige un JWT valide (io.use middleware) : sans lui, la
-    // connexion est rejetée et les mises à jour temps réel des prêts
-    // n'arrivent jamais. Le userId est de toute façon dérivé du token
-    // côté serveur (socket.user.id), donc pas besoin de le passer à "join".
+    // connexion est rejetÃ©e et les mises Ã  jour temps rÃ©el des prÃªts
+    // n'arrivent jamais. Le userId est de toute faÃ§on dÃ©rivÃ© du token
+    // cÃ´tÃ© serveur (socket.user.id), donc pas besoin de le passer Ã  "join".
     const dashSocket = io(SOCKET_URL, { auth: { token } });
     dashSocket.emit("join");
 
@@ -107,8 +108,8 @@ export default function Dashboard() {
 
   return (
     <div className="dash">
-      <Link to="/" className="dash-home-fab" aria-label="Retour à l'accueil">
-  ←
+      <Link to="/" className="dash-home-fab" aria-label="Retour Ã  l'accueil">
+  â†
       </Link>
       <header className="dash-header">
         <div className="dash-container dash-navbar">
@@ -244,6 +245,7 @@ export default function Dashboard() {
       </main>
 
       </div>
+      <LoanRequestButton />
       <ChatWidget />
     </div>
   );
