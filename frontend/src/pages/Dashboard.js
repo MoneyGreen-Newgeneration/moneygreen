@@ -51,7 +51,7 @@ export default function Dashboard() {
       setTransactions(transactionsData);
       setLoans(loansData);
     } catch (err) {
-      setError("Impossible de charger vos donnÃƒÂ©es pour le moment.");
+      setError("Impossible de charger vos donnÃƒÆ’Ã‚Â©es pour le moment.");
     } finally {
       setLoading(false);
     }
@@ -63,9 +63,9 @@ export default function Dashboard() {
     if (!userId) return;
     const token = localStorage.getItem("token");
     // Le serveur exige un JWT valide (io.use middleware) : sans lui, la
-    // connexion est rejetÃƒÂ©e et les mises ÃƒÂ  jour temps rÃƒÂ©el des prÃƒÂªts
-    // n'arrivent jamais. Le userId est de toute faÃƒÂ§on dÃƒÂ©rivÃƒÂ© du token
-    // cÃƒÂ´tÃƒÂ© serveur (socket.user.id), donc pas besoin de le passer ÃƒÂ  "join".
+    // connexion est rejetÃƒÆ’Ã‚Â©e et les mises ÃƒÆ’Ã‚Â  jour temps rÃƒÆ’Ã‚Â©el des prÃƒÆ’Ã‚Âªts
+    // n'arrivent jamais. Le userId est de toute faÃƒÆ’Ã‚Â§on dÃƒÆ’Ã‚Â©rivÃƒÆ’Ã‚Â© du token
+    // cÃƒÆ’Ã‚Â´tÃƒÆ’Ã‚Â© serveur (socket.user.id), donc pas besoin de le passer ÃƒÆ’Ã‚Â  "join".
     const dashSocket = io(SOCKET_URL, { auth: { token } });
     dashSocket.emit("join");
 
@@ -109,7 +109,7 @@ export default function Dashboard() {
   return (
     <div className="dash">
       <Link to="/" className="dash-home-fab" aria-label="Retour à l'accueil">
-  Ã¢â€ Â
+  ÃƒÂ¢Ã¢â‚¬Â Ã‚Â
       </Link>
       <header className="dash-header">
         <div className="dash-container dash-navbar">
