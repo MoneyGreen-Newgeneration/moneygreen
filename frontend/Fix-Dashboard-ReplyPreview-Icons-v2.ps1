@@ -33,7 +33,7 @@ $backup1 = "$DashboardFile.bak_$Timestamp"
 Copy-Item $DashboardFile $backup1
 Write-Host "Backup cree : $(Split-Path $backup1 -Leaf)" -ForegroundColor Green
 
-$lines = Get-Content $DashboardFile
+$lines = ([System.IO.File]::ReadAllText($DashboardFile, (New-Object System.Text.UTF8Encoding($false)))) -replace "`r`n", "`n" -split "`n"
 $changed1 = 0
 
 $ariaTemplate = '      <Link to="/" className="dash-home-fab" aria-label="Retour __AGRAVE__ l__APOS__accueil">'
@@ -44,7 +44,7 @@ $newLines = $lines | ForEach-Object {
         $changed1++
         $ariaLine
     }
-    elseif ($_ -match '^\s*â†\s*$') {
+    elseif ($_.Trim().Length -gt 0 -and $_.Trim().Length -lt 20 -and $_ -notmatch '<' -and $_ -notmatch '=' -and $_ -cnotmatch '^[\x00-\x7F]*$') {
         $changed1++
         '        ' + $leftArrow
     }

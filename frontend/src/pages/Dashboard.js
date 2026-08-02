@@ -109,7 +109,7 @@ export default function Dashboard() {
   return (
     <div className="dash">
       <Link to="/" className="dash-home-fab" aria-label="Retour à l'accueil">
-  ÃƒÂ¢Ã¢â‚¬Â Ã‚Â
+        ←
       </Link>
       <header className="dash-header">
         <div className="dash-container dash-navbar">
@@ -250,3 +250,4 @@ export default function Dashboard() {
     </div>
   );
 }
+
