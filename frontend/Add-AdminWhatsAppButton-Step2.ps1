@@ -43,7 +43,7 @@ $fnAddition = @'
     if (!u.phoneNumber) return null;
     const digits = u.phoneNumber.replace(/[^\d]/g, "");
     const message = encodeURIComponent(
-      `Bonjour ${u.username}, c'est la reception administrative MoneyGreen ! Nous vous attendons  sur la plateforme pour un entretien.` : https://moneygreeny.vercel.app`
+      `Bonjour ${u.username}, c'est la reception administrative MoneyGreen ! Nous vous attendons  sur la plateforme pour un entretien. : https://moneygreeny.vercel.app`
     );
     return `https://wa.me/${digits}?text=${message}`;
   };
