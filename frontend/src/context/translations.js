@@ -75,7 +75,7 @@ const translations = {
     login_title: "Connexion", login_email: "Email", login_password: "Mot de passe",
     login_btn: "Se connecter", login_loading: "Connexion...", login_no_account: "Pas encore de compte ?", login_register: "Inscrivez-vous",
     register_title: "Inscription", register_username: "Nom d'utilisateur", register_email: "Email",
-    register_phone: "Téléphone WhatsApp", register_phone_hint: "Ce numéro doit ètre votre numéro WhatsApp, il nous servira è vous contacter.", register_password: "Mot de passe",
+    register_phone: "Téléphone WhatsApp", register_phone_hint: "Ce numéro doit avoir un compte WhatsApp afin de vous contacter.", register_password: "Mot de passe",
     register_btn: "Créer mon compte", register_loading: "Création...",
     register_success: "Compte créé ! Redirection vers la connexion...",
     register_have_account: "Déjà un compte ?", register_login: "Connectez-vous",
