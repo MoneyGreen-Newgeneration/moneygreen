@@ -6,6 +6,7 @@ import ChatHeader from "./ChatHeader";
 import ChatInput from "./ChatInput";
 import ChatMessages from "./ChatMessages";
 import ReplyPreview from "./ReplyPreview";
+import ChatTypingHint from "./ChatTypingHint";
 import "./Chat.css";
 
 export default function ChatWidget() {
@@ -134,6 +135,9 @@ export default function ChatWidget() {
             </div>
           </div>
         </div>
+      )}
+      {!open && (
+        <ChatTypingHint text="Rejoignez-nous via le chat" />
       )}
       <button className="chat-bubble" onClick={() => setOpen(o => !o)}>
         {open ? "✕" : "💬"}

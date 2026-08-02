@@ -58,6 +58,7 @@ export default function Register() {
         <label style={styles.label}>
           {t("register_phone")}
           <input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} style={styles.input} required placeholder="+237 6XX XXX XXX" />
+          <small style={styles.hint}>{t("register_phone_hint")}</small>
         </label>
         <label style={styles.label}>
           {t("register_password")}
@@ -101,6 +102,7 @@ function getStyles(darkMode) {
       gap: "0.75rem",
     },
     heading: { color: darkMode ? "#e6e8ea" : "#1a1d1b", margin: 0 },
+    hint: { fontSize: ".78rem", opacity: .7, fontWeight: 400, marginTop: 4, display: "block" },
     label: {
       display: "flex",
       flexDirection: "column",
