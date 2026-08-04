@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import MoneyGreenMark from "../components/MoneyGreenMark";
 import DarkModeToggle from "../components/DarkModeToggle";
 import LangSelector from "../components/LangSelector";
+import Reveal from "../components/Reveal";
 import "./Home.css";
 import PromoBanner from "../components/PromoBanner";
 import AgencyGallery from "../components/AgencyGallery";
@@ -254,7 +255,7 @@ export default function Home() {
           <div className="home-hero-shape home-hero-shape-2" />
         </div>
         <div className="home-container home-hero-grid">
-          <div className="home-hero-content">
+          <div className="home-hero-content mg-enter">
             <p className="home-eyebrow">{t("home_eyebrow")}</p>
             <h1>{t("home_hero_title")}</h1>
             <p className="home-hero-lede">{t("home_hero_sub")}</p>
@@ -263,7 +264,7 @@ export default function Home() {
               <a href="#produits" className="home-btn home-btn-outline">{t("home_hero_link")}</a>
             </div>
           </div>
-          <div className="home-hero-card" aria-live="polite">
+          <div className="home-hero-card mg-enter mg-enter-1" aria-live="polite">
             <span className="home-hero-card-label">{t("home_now")}</span>
             <span className="home-hero-card-product">{products[activeProduct].label}</span>
             <p className="home-hero-card-desc">{products[activeProduct].description}</p>
@@ -286,7 +287,7 @@ export default function Home() {
       </section>
 
       <section id="produits" className="home-section">
-        <div className="home-container">
+        <Reveal className="home-container">
           <div className="home-section-title">
             <p className="home-eyebrow">{t("home_products_eyebrow")}</p>
             <h2>{t("home_products_title")}</h2>
@@ -301,11 +302,11 @@ export default function Home() {
               </Link>
             ))}
           </div>
-        </div>
+        </Reveal>
       </section>
 
       <section id="processus" className="home-section">
-        <div className="home-container">
+        <Reveal className="home-container">
           <div className="home-section-title">
             <p className="home-eyebrow">{t("home_process_eyebrow")}</p>
             <h2>{t("home_process_title")}</h2>
@@ -319,11 +320,11 @@ export default function Home() {
               </li>
             ))}
           </ol>
-        </div>
+        </Reveal>
       </section>
 
       <section className="home-section home-section-alt">
-        <div className="home-container">
+        <Reveal className="home-container">
           <div className="home-section-title">
             <p className="home-eyebrow">{t("home_testi_eyebrow")}</p>
             <h2>{t("home_testi_title")}</h2>
@@ -362,11 +363,11 @@ export default function Home() {
               {testiVisible < testimonials.length ? t("home_testi_more") : t("home_testi_less")}
             </button>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       <section className="home-section" aria-label="Pays eligibles">
-        <div className="home-container">
+        <Reveal className="home-container">
           <div className="home-section-title">
             <p className="home-eyebrow">{t("home_countries_eyebrow")}</p>
             <h2>{t("home_countries_title")}</h2>
@@ -382,11 +383,11 @@ export default function Home() {
               </div>
             ))}
           </div>
-        </div>
+        </Reveal>
       </section>
 
       <section className="home-section home-section-alt" aria-label="Nos partenaires">
-        <div className="home-container">
+        <Reveal className="home-container">
           <div className="home-section-title">
             <p className="home-eyebrow">{t("home_partners_eyebrow")}</p>
             <h2>{t("home_partners_title")}</h2>
@@ -401,13 +402,13 @@ export default function Home() {
               </div>
             ))}
           </div>
-        </div>
+        </Reveal>
       </section>
 
       <CompanyPresentation />
 
       <section id="contact" className="home-section">
-        <div className="home-container home-contact-grid">
+        <Reveal className="home-container home-contact-grid">
           <div>
             <p className="home-eyebrow">{t("home_contact_eyebrow")}</p>
             <h2>{t("home_contact_title")}</h2>
@@ -434,7 +435,7 @@ export default function Home() {
             </label>
             <button type="submit" className="home-btn home-btn-primary">{t("home_contact_send")}</button>
           </form>
-        </div>
+        </Reveal>
       </section>
 
       <AgencyGallery />

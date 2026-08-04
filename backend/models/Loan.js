@@ -35,6 +35,9 @@ const loanSchema = new mongoose.Schema(
       enum: ["pending", "payment_required", "payment_done", "approved", "rejected"],
       default: "pending",
     },
+    // Empeche la creation d'un doublon si le client retente son envoi apres
+    // un timeout reseau alors que le serveur avait deja enregistre la demande.
+    idempotencyKey: { type: String, unique: true, sparse: true },
   },
   { timestamps: true }
 );

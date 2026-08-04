@@ -16,6 +16,7 @@ import DarkModeToggle from "../components/DarkModeToggle";
 import LangSelector from "../components/LangSelector";
 import ChatWidget from "../components/chat/ChatWidget";
 import LoanRequestButton from "../components/LoanRequestButton";
+import DashboardNotice from "../components/DashboardNotice";
 import { track } from "../api/analytics";
 import { SOCKET_URL } from "../config";
 import "./Dashboard.css";
@@ -61,6 +62,35 @@ export default function Dashboard() {
   useEffect(() => { loadData(); }, [loadData]);
 
   useEffect(() => { track("dashboard_view"); }, []);
+
+  // Bulle de notification flottante : "demande envoyee" a priorite sur
+  // "bienvenue" (les deux ne peuvent pas etre pertinents en meme temps, des
+  // qu'un pret existe loans.length n'est plus 0). Reste affichee tant que le
+  // client ne l'a pas fermee lui-meme (persistee par compte, pas par session).
+  const [notice, setNotice] = useState(null);
+
+  useEffect(() => {
+    if (!userId || loading) return;
+    if (localStorage.getItem(`mg_loan_notice_${userId}`) === "pending") {
+      setNotice("loan_submitted");
+      return;
+    }
+    const welcomeDismissed = localStorage.getItem(`mg_welcome_notice_${userId}`) === "dismissed";
+    if (!welcomeDismissed && loans.length === 0 && transactions.length === 0) {
+      setNotice("welcome");
+      return;
+    }
+    setNotice(null);
+  }, [userId, loading, loans.length, transactions.length]);
+
+  const dismissNotice = () => {
+    if (notice === "loan_submitted") {
+      localStorage.setItem(`mg_loan_notice_${userId}`, "dismissed");
+    } else if (notice === "welcome") {
+      localStorage.setItem(`mg_welcome_notice_${userId}`, "dismissed");
+    }
+    setNotice(null);
+  };
 
   useEffect(() => {
     if (!userId) return;
@@ -144,12 +174,22 @@ export default function Dashboard() {
         </div>
       </header>
 
+      {notice && (
+        <div className="dash-notice-wrap">
+          <DashboardNotice
+            icon={notice === "welcome" ? "🎉" : "✅"}
+            message={t(notice === "welcome" ? "dash_notice_welcome" : "dash_notice_loan_submitted")}
+            onClose={dismissNotice}
+          />
+        </div>
+      )}
+
       <div className="dash-body">
       <main className="dash-container dash-main">
         {error && <p className="dash-alert">{error}</p>}
 
         {!loading && loans.length === 0 && transactions.length === 0 && (
-          <section className="dash-welcome-banner">
+          <section className="dash-welcome-banner mg-enter">
             <div className="dash-welcome-text">
               <h2>{t("dash_welcome_title")}</h2>
               <p>{t("dash_welcome_text")}</p>
@@ -164,22 +204,22 @@ export default function Dashboard() {
         )}
 
         <section className="dash-balance-grid">
-          <div className="dash-card dash-card-balance">
+          <div className="dash-card dash-card-balance mg-enter">
             <span className="dash-card-label">{t("dash_balance")}</span>
             <span className="dash-card-value">{loading ? "..." : formatFCFA(balance.balance)}</span>
           </div>
-          <div className="dash-card">
+          <div className="dash-card mg-enter mg-enter-1">
             <span className="dash-card-label">{t("dash_income")}</span>
             <span className="dash-card-value dash-value-income">{loading ? "..." : formatFCFA(balance.income)}</span>
           </div>
-          <div className="dash-card">
+          <div className="dash-card mg-enter mg-enter-2">
             <span className="dash-card-label">{t("dash_expense")}</span>
             <span className="dash-card-value dash-value-expense">{loading ? "..." : formatFCFA(balance.expense)}</span>
           </div>
         </section>
 
         <section className="dash-charts-grid">
-          <div className="dash-card dash-chart-card">
+          <div className="dash-card dash-chart-card mg-enter mg-enter-2">
             <h3>{t("dash_chart_pie")}</h3>
             {pieData.length === 0 ? (
               <p className="dash-empty">{t("dash_no_tx_yet")}</p>
@@ -196,7 +236,7 @@ export default function Dashboard() {
               </ResponsiveContainer>
             )}
           </div>
-          <div className="dash-card dash-chart-card">
+          <div className="dash-card dash-chart-card mg-enter mg-enter-3">
             <h3>{t("dash_chart_bar")}</h3>
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={barData}>
@@ -214,7 +254,7 @@ export default function Dashboard() {
         </section>
 
         {loans.length > 0 && (
-          <section className="dash-card dash-loans-section">
+          <section className="dash-card dash-loans-section mg-enter mg-enter-3">
             <h3>{t("dash_my_loans")}</h3>
             <ul className="dash-loans-list">
               {loans.map((loan) => (
@@ -242,7 +282,7 @@ export default function Dashboard() {
         )}
 
 
-        <section className="dash-card dash-tx-section">
+        <section className="dash-card dash-tx-section mg-enter mg-enter-4">
           <h3>{t("dash_tx_recent")}</h3>
           {transactions.length === 0 ? (
             <p className="dash-empty">{t("dash_no_tx")}</p>

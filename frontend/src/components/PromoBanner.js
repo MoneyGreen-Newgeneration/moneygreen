@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import Reveal from "./Reveal";
 import "./PromoBanner.css";
 
 const SLIDES = [
   {
     key: "auto",
-    icon: "??",
+    icon: "🚗",
     accent: "#1E8A3E",
     to: "/prets/auto",
     tag: "Prêt auto",
@@ -16,7 +17,7 @@ const SLIDES = [
   },
   {
     key: "immobilier",
-    icon: "??",
+    icon: "🏠",
     accent: "#15602B",
     to: "/prets/immobilier",
     tag: "Prêt immobilier",
@@ -27,7 +28,7 @@ const SLIDES = [
   },
   {
     key: "scolaire",
-    icon: "??",
+    icon: "🎓",
     accent: "#0d3d1d",
     to: "/prets/scolaire",
     tag: "Prêt scolaire",
@@ -38,7 +39,7 @@ const SLIDES = [
   },
   {
     key: "personnel",
-    icon: "??",
+    icon: "💼",
     accent: "#3fc466",
     to: "/prets/personnel",
     tag: "Prêt personnel",
@@ -71,7 +72,7 @@ export default function PromoBanner() {
 
   return (
     <section className="promo-banner" aria-label="Nos offres MoneyGreen">
-      <div className="promo-banner-inner">
+      <Reveal className="promo-banner-inner">
         {SLIDES.map((s, i) => (
           <div
             key={s.key}
@@ -125,7 +126,7 @@ export default function PromoBanner() {
             style={{ animationDuration: `${DURATION}ms` }}
           />
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

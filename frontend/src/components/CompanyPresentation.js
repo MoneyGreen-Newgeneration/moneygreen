@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { COMPANY_PRESENTATION } from "../data/companyPresentationContent";
+import Reveal from "./Reveal";
 import "./CompanyPresentation.css";
 
 // Proportion du texte visible avant troncature (meme logique que
@@ -237,7 +238,7 @@ export default function CompanyPresentation() {
 
   return (
     <section className="home-section" aria-label="Présentation de Money Green Finance Ltd">
-      <div className="home-container">
+      <Reveal className="home-container">
         <div className="company-pres">
           <header className="company-pres-header">
             <h2 className="company-pres-name">{data.name}</h2>
@@ -286,7 +287,7 @@ export default function CompanyPresentation() {
             <p className="company-pres-footer-sub">{data.footer.sub}</p>
           </footer>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

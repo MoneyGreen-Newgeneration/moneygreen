@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import Reveal from "./Reveal";
 import "./AgencyGallery.css";
 
 const PHOTOS = [
@@ -30,7 +31,7 @@ export default function AgencyGallery() {
 
   return (
     <section className="agency-gallery">
-      <div className="home-container">
+      <Reveal className="home-container">
         <div className="home-section-title">
           <h2>Nos agences</h2>
           <p>Decouvrez MoneyGreen sur le terrain, proche de vous.</p>
@@ -58,7 +59,7 @@ export default function AgencyGallery() {
             ))}
           </div>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

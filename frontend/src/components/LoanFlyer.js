@@ -7,7 +7,7 @@ function FlyerFrame({ theme, badge, children }) {
   return (
     <div className={`loan-flyer-frame ${dark ? "loan-flyer-dark" : "loan-flyer-light"}`}>
       <div className="loan-flyer-header">
-        <MoneyGreenMark size={22} bg={dark ? "#3fc466" : "#1e8a3e"} fg={dark ? "#0d1210" : "#ffffff"} />
+        <MoneyGreenMark size={22} />
         <span className="loan-flyer-brand">Money<strong>Green</strong></span>
       </div>
       <div className="loan-flyer-stage">{children}</div>

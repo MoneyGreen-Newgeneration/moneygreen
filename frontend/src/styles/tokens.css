@@ -1,0 +1,87 @@
+/*
+ * Design tokens partages MoneyGreen.
+ *
+ * Toute nouvelle couleur / rayon / ombre / espacement doit passer par une
+ * variable definie ici plutot que d'etre codee en dur dans une page - c'est
+ * la duplication (les memes hex repetes dans chaque fichier CSS) qui causait
+ * l'incoherence visuelle d'une page a l'autre.
+ *
+ * Valeurs reprises telles quelles de Home.css / Dashboard.css / Loans.css
+ * (mode clair et sombre) pour ne rien changer visuellement en centralisant.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Marque */
+  --mg-green: #1e8a3e;
+  --mg-green-deep: #15602b;
+  --mg-green-bright: #3fc466;
+  --mg-green-soft: #a8e8bd;
+  --mg-gold: #e8c53a;
+  --mg-amber: #e8a53a;
+  --mg-red: #c62828;
+  /* Accent semantique : plus clair en mode sombre pour rester lisible sur
+     fond fonce, evite de refaire ce choix a la main dans chaque page. */
+  --mg-accent: var(--mg-green);
+  --mg-anthracite: #1c1f1d;
+  --mg-anthracite-soft: #2a2e2b;
+  --mg-white: #ffffff;
+
+  /* Surfaces (mode clair) */
+  --mg-bg: #f4f6f8;
+  --mg-mist: #f3f6f4;
+  --mg-surface: var(--mg-white);
+  --mg-input-bg: var(--mg-white);
+  --mg-ink: #1a1d1b;
+  --mg-text-soft: rgba(26, 29, 27, 0.6);
+  --mg-line: rgba(28, 31, 29, 0.1);
+
+  /* Typo */
+  --mg-display: "Archivo", "Inter", sans-serif;
+  --mg-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Rayons */
+  --mg-radius-sm: 6px;
+  --mg-radius-md: 10px;
+  --mg-radius-lg: 14px;
+  --mg-radius-pill: 999px;
+
+  /* Ombres */
+  --mg-shadow-sm: 0 2px 8px rgba(28, 31, 29, 0.1);
+  --mg-shadow-md: 0 10px 26px rgba(28, 31, 29, 0.06);
+  --mg-shadow-lg: 0 12px 30px rgba(28, 31, 29, 0.14);
+
+  /* Espacement */
+  --mg-space-1: 4px;
+  --mg-space-2: 8px;
+  --mg-space-3: 12px;
+  --mg-space-4: 16px;
+  --mg-space-5: 24px;
+  --mg-space-6: 32px;
+  --mg-space-7: 48px;
+  --mg-space-8: 64px;
+
+  /* Mouvement - courbe "souple" (deceleration douce, pas de rebond agressif) */
+  --mg-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --mg-duration-fast: 150ms;
+  --mg-duration-base: 320ms;
+  --mg-duration-slow: 560ms;
+}
+
+body.dark-mode {
+  --mg-bg: #14171a;
+  --mg-mist: #14171a;
+  --mg-surface: #1e2226;
+  --mg-input-bg: #262b30;
+  --mg-ink: #e6e8ea;
+  --mg-anthracite: #e6e8ea;
+  --mg-anthracite-soft: #262b30;
+  --mg-text-soft: rgba(230, 232, 234, 0.6);
+  --mg-line: rgba(255, 255, 255, 0.1);
+  --mg-red: #ff8a80;
+  --mg-accent: var(--mg-green-bright);
+  --mg-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --mg-shadow-md: 0 10px 26px rgba(0, 0, 0, 0.3);
+  --mg-shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.4);
+}

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
 import { useLang } from "../context/LangContext";
 import LangSelector from "../components/LangSelector";
 import DarkModeToggle from "../components/DarkModeToggle";
@@ -13,7 +12,6 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
-  const { darkMode } = useTheme();
   const { t } = useLang();
   const navigate = useNavigate();
 
@@ -37,7 +35,7 @@ export default function Login() {
     }
   };
 
-  const styles = getStyles(darkMode);
+  const styles = getStyles();
 
   return (
     <div style={styles.container}>
@@ -45,7 +43,7 @@ export default function Login() {
         <LangSelector />
         <DarkModeToggle />
       </div>
-      <form style={styles.form} onSubmit={handleSubmit}>
+      <form className="mg-enter" style={styles.form} onSubmit={handleSubmit}>
         <h2 style={styles.heading}>{t("login_title")}</h2>
         {error && <p style={styles.error}>{error}</p>}
         <label style={styles.label}>
@@ -56,7 +54,14 @@ export default function Login() {
           {t("login_password")}
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={styles.input} />
         </label>
-        <button type="submit" disabled={loading} style={styles.button}>
+        <button
+          type="submit"
+          disabled={loading}
+          aria-busy={loading}
+          className={loading ? "mg-btn-loading" : ""}
+          style={{ ...styles.button, opacity: loading ? 0.85 : 1, cursor: loading ? "not-allowed" : "pointer" }}
+        >
+          {loading && <span className="mg-btn-spinner" aria-hidden="true" />}
           {loading ? t("login_loading") : t("login_btn")}
         </button>
         <p style={styles.text}>
@@ -67,7 +72,7 @@ export default function Login() {
   );
 }
 
-function getStyles(darkMode) {
+function getStyles() {
   return {
     container: {
       display: "flex",
@@ -75,7 +80,7 @@ function getStyles(darkMode) {
       justifyContent: "center",
       alignItems: "center",
       minHeight: "100vh",
-      backgroundColor: darkMode ? "#14171a" : "#f4f6f8",
+      backgroundColor: "var(--mg-bg)",
       gap: "1rem",
     },
     topBar: {
@@ -84,41 +89,46 @@ function getStyles(darkMode) {
       alignItems: "center",
     },
     form: {
-      backgroundColor: darkMode ? "#1e2226" : "#fff",
+      backgroundColor: "var(--mg-surface)",
       padding: "2rem",
-      borderRadius: "8px",
-      boxShadow: darkMode ? "0 2px 8px rgba(0,0,0,0.4)" : "0 2px 8px rgba(0,0,0,0.1)",
+      borderRadius: "var(--mg-radius-md)",
+      boxShadow: "var(--mg-shadow-sm)",
       width: "320px",
       display: "flex",
       flexDirection: "column",
       gap: "0.75rem",
     },
-    heading: { color: darkMode ? "#e6e8ea" : "#1a1d1b", margin: 0 },
+    heading: { color: "var(--mg-ink)", margin: 0, fontFamily: "var(--mg-display)" },
     label: {
       display: "flex",
       flexDirection: "column",
       fontSize: "0.9rem",
       gap: "0.25rem",
-      color: darkMode ? "#e6e8ea" : "#1a1d1b",
+      color: "var(--mg-ink)",
     },
     input: {
-      padding: "0.5rem",
-      borderRadius: "4px",
-      border: darkMode ? "1px solid #444" : "1px solid #ccc",
-      backgroundColor: darkMode ? "#262b30" : "#fff",
-      color: darkMode ? "#e6e8ea" : "#1a1d1b",
+      padding: "0.6rem 0.7rem",
+      borderRadius: "var(--mg-radius-sm)",
+      border: "1.5px solid var(--mg-line)",
+      backgroundColor: "var(--mg-input-bg)",
+      color: "var(--mg-ink)",
+      transition: "border-color var(--mg-duration-fast) var(--mg-ease)",
     },
     button: {
-      padding: "0.6rem",
-      borderRadius: "4px",
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "0.5rem",
+      padding: "0.7rem",
+      borderRadius: "var(--mg-radius-sm)",
       border: "none",
-      backgroundColor: "#2e7d32",
-      color: "#fff",
-      cursor: "pointer",
+      backgroundColor: "var(--mg-green)",
+      color: "var(--mg-white)",
       marginTop: "0.5rem",
+      transition: "transform var(--mg-duration-fast) var(--mg-ease), background var(--mg-duration-fast) var(--mg-ease), opacity var(--mg-duration-fast) var(--mg-ease)",
     },
-    error: { color: darkMode ? "#ff8a80" : "#c62828", fontSize: "0.85rem" },
-    text: { color: darkMode ? "#e6e8ea" : "#1a1d1b" },
-    link: { color: darkMode ? "#3fc466" : "#2e7d32" },
+    error: { color: "var(--mg-red)", fontSize: "0.85rem" },
+    text: { color: "var(--mg-ink)" },
+    link: { color: "var(--mg-accent)" },
   };
 }

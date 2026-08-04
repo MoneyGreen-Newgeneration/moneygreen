@@ -1,19 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&family=Inter:wght@400;500;600;700&display=swap');
-
-:root {
-  --mg-green: #1e8a3e;
-  --mg-green-deep: #15602b;
-  --mg-green-bright: #3fc466;
-  --mg-anthracite: #1c1f1d;
-  --mg-anthracite-soft: #2a2e2b;
-  --mg-white: #ffffff;
-  --mg-mist: #f3f6f4;
-  --mg-ink: #1a1d1b;
-  --mg-line: rgba(28, 31, 29, 0.1);
-
-  --mg-display: "Archivo", "Inter", sans-serif;
-  --mg-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
+/* Tokens de couleur/typo communs a tout le site : voir src/styles/tokens.css */
 
 .home {
   font-family: var(--mg-body);
@@ -943,16 +928,6 @@ body.dark-mode .home-section-subtitle {
 
 .home-admin-link:hover {
   color: rgba(255, 255, 255, 0.6);
-}
-
-
-body.dark-mode .home {
-  --mg-surface: #1e2226;
-  --mg-mist: #14171a;
-  --mg-ink: #e6e8ea;
-  --mg-anthracite: #e6e8ea;
-  --mg-anthracite-soft: #262b30;
-  --mg-line: rgba(255,255,255,.1);
 }
 
 

@@ -1,0 +1,85 @@
+/*
+ * Utilitaires d'entree en douceur, partages par toutes les pages :
+ * - .mg-enter / .mg-enter-1..4 : fondu + leger deplacement au montage,
+ *   pour les vues "plein ecran" (formulaires, dashboard, page de pret).
+ * - .mg-reveal (+ .mg-visible) : meme effet declenche au scroll, pilote par
+ *   le composant <Reveal> (IntersectionObserver) - pour les longues pages
+ *   comme l'accueil, ou tout animer au montage n'aurait aucun sens.
+ * Respecte prefers-reduced-motion dans les deux cas.
+ */
+
+@keyframes mg-fade-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+.mg-enter {
+  animation: mg-fade-in var(--mg-duration-slow) var(--mg-ease) both;
+}
+
+.mg-enter-1 { animation-delay: 60ms; }
+.mg-enter-2 { animation-delay: 120ms; }
+.mg-enter-3 { animation-delay: 180ms; }
+.mg-enter-4 { animation-delay: 240ms; }
+
+.mg-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--mg-duration-slow) var(--mg-ease),
+              transform var(--mg-duration-slow) var(--mg-ease);
+}
+
+.mg-reveal.mg-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mg-enter,
+  .mg-enter-1,
+  .mg-enter-2,
+  .mg-enter-3,
+  .mg-enter-4 {
+    animation: none;
+  }
+  .mg-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/*
+ * Bouton de soumission en chargement (spinner + legere pulsation), partage
+ * par tous les formulaires (connexion, inscription, demande de pret...).
+ */
+@keyframes mg-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes mg-btn-pulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+.mg-btn-spinner {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  animation: mg-spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+.mg-btn-loading {
+  animation: mg-btn-pulse 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mg-btn-spinner,
+  .mg-btn-loading {
+    animation: none;
+  }
+}

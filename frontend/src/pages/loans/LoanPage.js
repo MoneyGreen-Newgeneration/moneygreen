@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useLang } from "../../context/LangContext";
@@ -39,11 +39,30 @@ export default function LoanPage({ type, titleKey, taglineKey, descriptionKey, m
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  // Omission de remplissage (CNI manquante, identite incomplete, consentement
+  // non coche) : affichee en overlay floute, se referme seule apres quelques
+  // secondes plutot que de rester en texte discret en haut du formulaire.
+  const [omissionError, setOmissionError] = useState("");
+  const omissionTimeoutRef = useRef(null);
   // Statut d'upload par piece jointe (documents facultatifs + CNI recto/verso
   // obligatoires) : { status: "uploading"|"done"|"error", url, name }
   const [docState, setDocState] = useState({});
+  // Generee une seule fois par visite du formulaire et reutilisee a chaque
+  // tentative : permet au backend de detecter un renvoi apres timeout reseau
+  // et d'eviter de creer un dossier en double.
+  const [idempotencyKey] = useState(() =>
+    crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`
+  );
 
   useEffect(() => { track("loan_page_view", { type }); }, [type]);
+
+  useEffect(() => () => clearTimeout(omissionTimeoutRef.current), []);
+
+  const showOmissionError = (message) => {
+    clearTimeout(omissionTimeoutRef.current);
+    setOmissionError(message);
+    omissionTimeoutRef.current = setTimeout(() => setOmissionError(""), 4500);
+  };
 
   const handleChange = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
@@ -72,11 +91,11 @@ export default function LoanPage({ type, titleKey, taglineKey, descriptionKey, m
     e.preventDefault();
     setError("");
     if (!isAuthenticated) { navigate("/login"); return; }
-    if (!accepted) { setError("Vous devez accepter les conditions pour continuer."); return; }
+    if (!accepted) { showOmissionError(t("loan_consent_missing")); return; }
     const cniReady = docState.cni_recto?.status === "done" && docState.cni_verso?.status === "done";
-    if (!cniReady) { setError(t("loan_cni_missing")); return; }
+    if (!cniReady) { showOmissionError(t("loan_cni_missing")); return; }
     if (!form.country || !form.city || !form.neighborhood || !form.profession) {
-      setError(t("loan_identity_missing"));
+      showOmissionError(t("loan_identity_missing"));
       return;
     }
     setSubmitting(true);
@@ -98,10 +117,14 @@ export default function LoanPage({ type, titleKey, taglineKey, descriptionKey, m
           monthlyIncome: form.monthlyIncome ? Number(form.monthlyIncome) : undefined,
           purpose: form.purpose,
           documents: [...requiredDocuments, ...optionalDocuments],
+          idempotencyKey,
         }),
         new Promise((resolve) => setTimeout(resolve, MIN_LOADING_MS)),
       ]);
       setSuccess(true);
+      // Lu par le dashboard pour afficher la notification de confirmation :
+      // reste "pending" tant que le client ne l'a pas fermee lui-meme.
+      localStorage.setItem(`mg_loan_notice_${user.id}`, "pending");
       track("loan_success", { type });
     } catch (err) {
       setError("Votre demande n'a pas pu être envoyée. Réessayez.");
@@ -117,6 +140,14 @@ export default function LoanPage({ type, titleKey, taglineKey, descriptionKey, m
         <div className="loan-loading-overlay">
           <div className="loan-loading-spinner" />
           <p className="loan-loading-text">{t("loan_processing")}</p>
+        </div>
+      )}
+      {omissionError && (
+        <div className="loan-error-overlay">
+          <div className="loan-error-card">
+            <span className="loan-error-icon" aria-hidden="true">⚠️</span>
+            <p className="loan-error-text">{omissionError}</p>
+          </div>
         </div>
       )}
       <header className="loan-header">
@@ -135,10 +166,10 @@ export default function LoanPage({ type, titleKey, taglineKey, descriptionKey, m
 
       <main className="loan-container loan-main">
         <div className="loan-hero-grid">
-          <div className="loan-flyer">
+          <div className="loan-flyer mg-enter">
             <LoanFlyer type={type} />
           </div>
-          <section className="loan-intro">
+          <section className="loan-intro mg-enter mg-enter-1">
             <p className="loan-eyebrow">{tagline}</p>
             <h1>{title}</h1>
             <p className="loan-description">{description}</p>
@@ -151,7 +182,7 @@ export default function LoanPage({ type, titleKey, taglineKey, descriptionKey, m
         <LoanSimulator type={type} onApply={handleApplySimulation} />
 
         <section className="loan-content-grid">
-          <div className="loan-card loan-documents-card">
+          <div className="loan-card loan-documents-card mg-enter">
             <h3>{t("loan_documents")}</h3>
             <p className="loan-documents-optional-note">{t("loan_documents_optional_note")}</p>
             <ul className="loan-documents-list">
@@ -192,7 +223,7 @@ export default function LoanPage({ type, titleKey, taglineKey, descriptionKey, m
             </ul>
           </div>
 
-          <div className="loan-card loan-form-card">
+          <div className="loan-card loan-form-card mg-enter mg-enter-1">
             <h3>{t("loan_form_title")}</h3>
             {success ? (
               <div className="loan-success">
@@ -302,7 +333,13 @@ export default function LoanPage({ type, titleKey, taglineKey, descriptionKey, m
                   <input type="checkbox" checked={accepted} onChange={(e) => setAccepted(e.target.checked)} />
                   <span>{t("loan_consent")}</span>
                 </label>
-                <button type="submit" className="loan-btn loan-btn-primary" disabled={submitting}>
+                <button
+                  type="submit"
+                  className={`loan-btn loan-btn-primary ${submitting ? "is-loading" : ""}`}
+                  disabled={submitting}
+                  aria-busy={submitting}
+                >
+                  {submitting && <span className="loan-btn-spinner" aria-hidden="true" />}
                   {submitting ? t("loan_submitting") : t("loan_submit")}
                 </button>
               </form>
