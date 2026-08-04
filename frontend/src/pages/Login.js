@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { useLang } from "../context/LangContext";
 import LangSelector from "../components/LangSelector";
 import DarkModeToggle from "../components/DarkModeToggle";
+import { track } from "../api/analytics";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -16,16 +17,21 @@ export default function Login() {
   const { t } = useLang();
   const navigate = useNavigate();
 
+  useEffect(() => { track("login_view"); }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
+    track("login_submit");
     try {
       await login(email, password);
+      track("login_success");
       navigate("/dashboard");
     } catch (err) {
       const message = err.response?.data?.message || "Une erreur est survenue. Réessayez.";
       setError(message);
+      track("login_error", { message });
     } finally {
       setLoading(false);
     }

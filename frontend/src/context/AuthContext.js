@@ -21,7 +21,13 @@ export function AuthProvider({ children }) {
   };
 
   const register = async (username, email, phoneNumber, password) => {
-    await api.post("/auth/register", { username, email, phoneNumber, password });
+    const response = await api.post("/auth/register", { username, email, phoneNumber, password });
+    const { token: newToken, user: newUser } = response.data;
+    localStorage.setItem("token", newToken);
+    localStorage.setItem("user", JSON.stringify(newUser));
+    setToken(newToken);
+    setUser(newUser);
+    return newUser;
   };
 
   const logout = () => {

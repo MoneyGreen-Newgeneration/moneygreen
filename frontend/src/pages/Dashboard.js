@@ -16,6 +16,7 @@ import DarkModeToggle from "../components/DarkModeToggle";
 import LangSelector from "../components/LangSelector";
 import ChatWidget from "../components/chat/ChatWidget";
 import LoanRequestButton from "../components/LoanRequestButton";
+import { track } from "../api/analytics";
 import { SOCKET_URL } from "../config";
 import "./Dashboard.css";
 
@@ -58,6 +59,8 @@ export default function Dashboard() {
   }, [userId]);
 
   useEffect(() => { loadData(); }, [loadData]);
+
+  useEffect(() => { track("dashboard_view"); }, []);
 
   useEffect(() => {
     if (!userId) return;

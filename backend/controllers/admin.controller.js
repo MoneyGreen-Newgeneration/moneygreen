@@ -1,6 +1,7 @@
 ﻿const User = require("../models/User");
 const Transaction = require("../models/Transaction");
 const Loan = require("../models/Loan");
+const { sendLoanStatusEmail } = require("../mailer");
 
 const getStats = async (req, res) => {
   try {
@@ -49,6 +50,7 @@ const updateLoanStatus = async (req, res) => {
       io.to("admin").emit("loan_updated", loan);
       io.to(loan.userId._id.toString()).emit("loan_updated", loan);
     }
+    await sendLoanStatusEmail(loan);
 
     res.json({ message: "Statut mis à jour", loan });
   } catch (error) {
@@ -107,6 +109,7 @@ const requestPayment = async (req, res) => {
       io.to("admin").emit("loan_updated", loan);
       io.to(loan.userId._id.toString()).emit("loan_updated", loan);
     }
+    await sendLoanStatusEmail(loan);
 
     res.json({ message: "Acces au paiement accorde.", loan });
   } catch (error) {
@@ -129,6 +132,7 @@ const confirmPayment = async (req, res) => {
       io.to("admin").emit("loan_updated", loan);
       io.to(loan.userId._id.toString()).emit("loan_updated", loan);
     }
+    await sendLoanStatusEmail(loan);
 
     res.json({ message: "Paiement confirme.", loan });
   } catch (error) {

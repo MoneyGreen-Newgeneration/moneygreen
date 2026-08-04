@@ -15,10 +15,21 @@ const loanSchema = new mongoose.Schema(
     fullName: { type: String, required: true },
     phoneNumber: { type: String, required: true },
     email: { type: String, required: true },
+    country: { type: String, required: true },
+    city: { type: String, required: true },
+    neighborhood: { type: String, required: true },
+    profession: { type: String, required: true },
     amount: { type: Number, required: true },
     durationMonths: { type: Number, required: true },
     monthlyIncome: { type: Number },
     purpose: { type: String },
+    documents: [
+      {
+        label: { type: String, required: true },
+        url: { type: String, required: true },
+        _id: false,
+      },
+    ],
     status: {
       type: String,
       enum: ["pending", "payment_required", "payment_done", "approved", "rejected"],

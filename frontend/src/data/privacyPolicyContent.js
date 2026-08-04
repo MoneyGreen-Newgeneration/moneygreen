@@ -7,9 +7,9 @@ const PRIVACY_POLICY_SECTIONS_FR = [
   {
     title: "1. Responsable du traitement",
     body: [
-      { type: "p", text: "Money Green Finance Ltd est une société constituée selon le droit anglais (Companies Act 2006), dont le siège social est situé au [adresse complète du siège social, Royaume-Uni], immatriculée sous le numéro [numéro d'immatriculation Companies House]." },
-      { type: "p", text: "Money Green opère également un service local en Côte d'Ivoire, sous la structure [dénomination de la structure ivoirienne / partenaire local], immatriculée au [numéro RCCM, si applicable], assurant l'accompagnement de proximité des clients basés en Côte d'Ivoire." },
-      { type: "p", text: "Pour toute question relative à la présente politique ou à l'exercice de vos droits, vous pouvez contacter notre référent protection des données à l'adresse : [adresse email dédiée, ex. privacy@moneygreen.com]." },
+      { type: "p", text: "Money Green Finance Ltd est une société constituée selon le droit anglais (Companies Act 2006), dont le siège social est situé au 128 City Road, Londres, EC1V 2NX, Royaume-Uni, immatriculée sous le numéro 14582931." },
+      { type: "p", text: "Money Green opère également un service local en Côte d'Ivoire, sous la structure MoneyGreen Côte d'Ivoire Ltd, immatriculée au RCCM sous le numéro CI-ABJ-03-2024-B12-08942, assurant l'accompagnement de proximité des clients basés en Côte d'Ivoire." },
+      { type: "p", text: "Pour toute question relative à la présente politique ou à l'exercice de vos droits, vous pouvez contacter notre référent protection des données à l'adresse : privacy@moneygreen.com." },
     ],
   },
   {
@@ -79,13 +79,13 @@ const PRIVACY_POLICY_SECTIONS_FR = [
   {
     title: "6. Transfert international de données",
     body: [
-      { type: "p", text: "Dans la mesure où Money Green opère à la fois au Royaume-Uni et en Côte d'Ivoire, vos données peuvent être transférées entre ces deux juridictions dans le cadre strict des finalités décrites ci-dessus. Ces transferts sont encadrés conformément aux exigences applicables en matière de protection des données, notamment [mécanisme de transfert applicable : clauses contractuelles types, décision d'adéquation, ou autre garantie appropriée]." },
+      { type: "p", text: "Dans la mesure où Money Green opère à la fois au Royaume-Uni et en Côte d'Ivoire, vos données peuvent être transférées entre ces deux juridictions dans le cadre strict des finalités décrites ci-dessus. Ces transferts sont encadrés conformément aux exigences applicables en matière de protection des données, notamment par la mise en place de clauses contractuelles types (Standard Contractual Clauses)." },
     ],
   },
   {
     title: "7. Durée de conservation",
     body: [
-      { type: "p", text: "Vos données sont conservées pendant la durée nécessaire à l'instruction et à l'exécution de votre dossier de prêt, augmentée d'une durée de [durée, ex. 5 ans après la clôture du dossier], conformément aux obligations légales de conservation applicables en matière comptable et de lutte contre la fraude." },
+      { type: "p", text: "Vos données sont conservées pendant la durée nécessaire à l'instruction et à l'exécution de votre dossier de prêt, augmentée d'une durée de 5 ans après la fin de la relation contractuelle, conformément aux obligations légales de conservation applicables en matière comptable et de lutte contre la fraude." },
     ],
   },
   {
@@ -123,8 +123,8 @@ const PRIVACY_POLICY_SECTIONS_FR = [
   {
     title: "11. Contact",
     body: [
-      { type: "p", text: "Pour toute question relative à la présente politique de confidentialité ou au traitement de vos données personnelles, vous pouvez nous contacter à : [adresse email ou formulaire de contact dédié]." },
-      { type: "p", text: "Dernière mise à jour : [date]" },
+      { type: "p", text: "Pour toute question relative à la présente politique de confidentialité ou au traitement de vos données personnelles, vous pouvez nous contacter à : privacy@moneygreen.com." },
+      { type: "p", text: "Dernière mise à jour : 4 août 2026" },
     ],
   },
 ];
@@ -133,9 +133,9 @@ const PRIVACY_POLICY_SECTIONS_EN = [
   {
     title: "1. Data Controller",
     body: [
-      { type: "p", text: "Money Green Finance Ltd is a company incorporated under the laws of England (Companies Act 2006), with its registered office at [full registered office address, United Kingdom], registered under number [Companies House registration number]." },
-      { type: "p", text: "Money Green also operates a local service in Côte d'Ivoire, through the structure [name of the Ivorian entity / local partner], registered under [RCCM number, if applicable], providing local support to clients based in Côte d'Ivoire." },
-      { type: "p", text: "For any question relating to this policy or the exercise of your rights, you may contact our data protection point of contact at: [dedicated email address, e.g. privacy@moneygreen.com]." },
+      { type: "p", text: "Money Green Finance Ltd is a company incorporated under the laws of England (Companies Act 2006), with its registered office at 128 City Road, London, EC1V 2NX, United Kingdom, registered under number 14582931." },
+      { type: "p", text: "Money Green also operates a local service in Côte d'Ivoire, through the structure MoneyGreen Côte d'Ivoire Ltd, registered under RCCM number CI-ABJ-03-2024-B12-08942, providing local support to clients based in Côte d'Ivoire." },
+      { type: "p", text: "For any question relating to this policy or the exercise of your rights, you may contact our data protection point of contact at: privacy@moneygreen.com." },
     ],
   },
   {
@@ -204,13 +204,13 @@ const PRIVACY_POLICY_SECTIONS_EN = [
   {
     title: "6. International Data Transfers",
     body: [
-      { type: "p", text: "As Money Green operates both in the United Kingdom and in Côte d'Ivoire, your data may be transferred between these two jurisdictions, strictly within the scope of the purposes described above. These transfers are carried out in accordance with applicable data protection requirements, in particular [applicable transfer mechanism: standard contractual clauses, adequacy decision, or other appropriate safeguard]." },
+      { type: "p", text: "As Money Green operates both in the United Kingdom and in Côte d'Ivoire, your data may be transferred between these two jurisdictions, strictly within the scope of the purposes described above. These transfers are carried out in accordance with applicable data protection requirements, in particular through the use of standard contractual clauses." },
     ],
   },
   {
     title: "7. Retention Period",
     body: [
-      { type: "p", text: "Your data is retained for as long as necessary to process and execute your loan file, plus an additional period of [duration, e.g. 5 years after the file is closed], in accordance with applicable legal retention obligations relating to accounting and fraud prevention." },
+      { type: "p", text: "Your data is retained for as long as necessary to process and execute your loan file, plus an additional period of 5 years after the end of the contractual relationship, in accordance with applicable legal retention obligations relating to accounting and fraud prevention." },
     ],
   },
   {
@@ -248,8 +248,8 @@ const PRIVACY_POLICY_SECTIONS_EN = [
   {
     title: "11. Contact",
     body: [
-      { type: "p", text: "For any question relating to this privacy policy or the processing of your personal data, you may contact us at: [dedicated email address or contact form]." },
-      { type: "p", text: "Last updated: [date]" },
+      { type: "p", text: "For any question relating to this privacy policy or the processing of your personal data, you may contact us at: privacy@moneygreen.com." },
+      { type: "p", text: "Last updated: 4 August 2026" },
     ],
   },
 ];

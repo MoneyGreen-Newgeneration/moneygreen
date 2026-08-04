@@ -661,3 +661,91 @@ body.dark-mode .adm-chat-placeholder {
   background: #b9b9b9;
   cursor: not-allowed;
 }
+
+.adm-btn-details {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: rgba(28,31,29,.08);
+  color: #1a1d1b;
+  border: none;
+  font-size: .82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.adm-details-row td {
+  background: #f8faf9;
+  padding: 1rem 1.2rem;
+}
+
+.adm-loan-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.adm-loan-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.7rem 1.2rem;
+}
+
+.adm-loan-details-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.adm-details-label {
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: rgba(26,29,27,.5);
+}
+
+.adm-loan-documents {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.adm-loan-documents-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.adm-doc-link {
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(30,138,62,.1);
+  color: #1e8a3e;
+  font-size: .8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.adm-doc-link:hover {
+  background: rgba(30,138,62,.18);
+}
+
+body.dark-mode .adm-btn-details {
+  background: rgba(255,255,255,.1);
+  color: #e6e8ea;
+}
+
+body.dark-mode .adm-details-row td {
+  background: #17191b;
+}
+
+body.dark-mode .adm-details-label {
+  color: rgba(230,232,234,.5);
+}
+
+body.dark-mode .adm-doc-link {
+  background: rgba(63,196,102,.14);
+  color: #3fc466;
+}

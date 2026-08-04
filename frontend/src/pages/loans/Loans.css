@@ -123,6 +123,13 @@
   text-transform: uppercase;
 }
 
+.loan-documents-optional-note {
+  font-size: 0.8rem;
+  color: rgba(26, 29, 27, 0.55);
+  margin: -0.6rem 0 1.2rem;
+  line-height: 1.4;
+}
+
 .loan-documents-list {
   list-style: none;
   margin: 0;
@@ -162,6 +169,131 @@
   color: rgba(26, 29, 27, 0.6);
   margin-top: 0.15rem;
   line-height: 1.4;
+}
+
+.loan-document-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.loan-document-upload {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.loan-document-upload-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.loan-document-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  background: rgba(30, 138, 62, 0.08);
+  color: #1e8a3e;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid rgba(30, 138, 62, 0.25);
+}
+
+.loan-document-upload-btn:hover {
+  background: rgba(30, 138, 62, 0.15);
+}
+
+.loan-document-upload-status {
+  font-size: 0.78rem;
+  color: rgba(26, 29, 27, 0.6);
+}
+
+.loan-document-upload-done {
+  color: #1e8a3e;
+  font-weight: 600;
+}
+
+.loan-document-upload-error {
+  color: #b3261e;
+  font-weight: 600;
+}
+
+.loan-cni-section {
+  border: 1.5px solid rgba(30, 138, 62, 0.3);
+  background: rgba(30, 138, 62, 0.04);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.loan-cni-title {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #1c1f1d;
+}
+
+.loan-cni-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.loan-cni-item {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 480px) {
+  .loan-cni-group {
+    grid-template-columns: 1fr;
+  }
+}
+
+.loan-loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 23, 21, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  z-index: 1000;
+}
+
+.loan-loading-spinner {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 5px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #3fc466;
+  animation: loan-spin 0.9s linear infinite;
+}
+
+@keyframes loan-spin {
+  to { transform: rotate(360deg); }
+}
+
+.loan-loading-text {
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 0 1.2rem;
 }
 
 .loan-form {
@@ -301,19 +433,6 @@
   }
 }
 
-.loan-illustration {
-  border-radius: 14px;
-  overflow: hidden;
-  margin-bottom: 2rem;
-}
-
-.loan-illustration svg {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-
 /* ===== MODE SOMBRE ===== */
 body.dark-mode .loan {
   background: #14171a;
@@ -369,6 +488,29 @@ body.dark-mode .loan-document-label {
 
 body.dark-mode .loan-document-detail {
   color: rgba(230,232,234,.6);
+}
+
+body.dark-mode .loan-document-upload-btn {
+  background: rgba(63,196,102,.12);
+  color: #3fc466;
+  border-color: rgba(63,196,102,.3);
+}
+
+body.dark-mode .loan-document-upload-status {
+  color: rgba(230,232,234,.6);
+}
+
+body.dark-mode .loan-documents-optional-note {
+  color: rgba(230,232,234,.5);
+}
+
+body.dark-mode .loan-cni-section {
+  background: rgba(63,196,102,.06);
+  border-color: rgba(63,196,102,.3);
+}
+
+body.dark-mode .loan-cni-title {
+  color: #e6e8ea;
 }
 
 .loan-hero-grid {

@@ -1,4 +1,4 @@
-﻿const bcrypt = require("bcrypt");
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
@@ -8,6 +8,10 @@ const register = async (req, res) => {
 
     if (!password) {
       return res.status(400).json({ message: "Password required" });
+    }
+
+    if (!phoneNumber) {
+      return res.status(400).json({ message: "WhatsApp phone number required" });
     }
 
     const userExists = await User.findOne({ email });
@@ -26,7 +30,27 @@ const register = async (req, res) => {
 
     await user.save();
 
-    res.status(201).json({ message: "User created successfully" });
+    // On connecte directement l'utilisateur apres inscription (meme forme de
+    // reponse que /login) pour lui eviter une double saisie de ses identifiants.
+    const token = jwt.sign(
+      { id: user._id, isAdmin: user.isAdmin },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    const safeUser = {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      isAdmin: user.isAdmin,
+    };
+
+    res.status(201).json({
+      message: "User created successfully",
+      token,
+      user: safeUser,
+    });
 
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { useLang } from "../context/LangContext";
 import LangSelector from "../components/LangSelector";
 import DarkModeToggle from "../components/DarkModeToggle";
+import { track } from "../api/analytics";
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -19,17 +20,22 @@ export default function Register() {
   const { t } = useLang();
   const navigate = useNavigate();
 
+  useEffect(() => { track("signup_view"); }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
+    track("signup_submit");
     try {
       await register(username, email, phoneNumber, password);
       setSuccess(true);
-      setTimeout(() => navigate("/login"), 2000);
+      track("signup_success");
+      navigate("/dashboard");
     } catch (err) {
       const message = err.response?.data?.message || "Une erreur est survenue. Réessayez.";
       setError(message);
+      track("signup_error", { message });
     } finally {
       setLoading(false);
     }

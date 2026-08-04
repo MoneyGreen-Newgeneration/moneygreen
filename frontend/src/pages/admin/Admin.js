@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, Fragment } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import { useAuth } from "../../context/AuthContext";
@@ -41,6 +41,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [updating, setUpdating] = useState(null);
+  const [expandedLoanId, setExpandedLoanId] = useState(null);
   const [paymentInfo, setPaymentInfo] = useState({ mtnNumber: "", mtnName: "", orangeNumber: "", orangeName: "", accountNumber: "", accountName: "", montant: 10000 });
   const [paymentMsg, setPaymentMsg] = useState("");
 
@@ -147,6 +148,24 @@ export default function Admin() {
       `Bonjour ${u.username}, c'est la reception administrative MoneyGreen ! Nous vous attendons sur la plateforme pour un entretien. https://moneygreeny.vercel.app`
     );
     return `https://wa.me/${digits}?text=${message}`;
+  };
+
+  // Message pre-rempli adapte au statut actuel du dossier, pour relancer le
+  // client sur WhatsApp en un clic plutot que de retaper le message a la main.
+  const loanWhatsAppMessages = {
+    pending: (loan, type) => `Bonjour ${loan.fullName}, nous avons bien recu votre demande de pret ${type}. Nous revenons vers vous sous 24 a 48h.`,
+    payment_required: (loan, type) => `Bonjour ${loan.fullName}, votre dossier de pret ${type} avance : des frais d'enrolement sont requis pour continuer le traitement. Connectez-vous a votre espace MoneyGreen pour voir les modalites de paiement.`,
+    payment_done: (loan, type) => `Bonjour ${loan.fullName}, nous confirmons la reception de votre paiement pour votre pret ${type}. Votre dossier est en cours de validation finale.`,
+    approved: (loan, type) => `Bonjour ${loan.fullName}, bonne nouvelle : votre demande de pret ${type} a ete approuvee ! Notre equipe va vous contacter pour la suite.`,
+    rejected: (loan, type) => `Bonjour ${loan.fullName}, nous sommes au regret de vous informer que votre demande de pret ${type} n'a pas ete approuvee a ce stade.`,
+  };
+
+  const buildLoanWhatsAppLink = (loan) => {
+    if (!loan.phoneNumber) return null;
+    const digits = loan.phoneNumber.replace(/[^\d]/g, "");
+    const type = typeLabel[loan.type] || loan.type;
+    const builder = loanWhatsAppMessages[loan.status] || loanWhatsAppMessages.pending;
+    return `https://wa.me/${digits}?text=${encodeURIComponent(builder(loan, type))}`;
   };
 
   const handleToggleAdmin = async (id) => {
@@ -367,7 +386,8 @@ export default function Admin() {
                     {loans.length === 0 ? (
                       <tr><td colSpan="6" className="adm-empty">{t("adm_no_request")}</td></tr>
                     ) : loans.map((loan) => (
-                      <tr key={loan._id}>
+                      <Fragment key={loan._id}>
+                      <tr>
                         <td>
                           <span className="adm-name">{loan.userId?.username || loan.fullName}</span>
                           <span className="adm-sub">{loan.userId?.email || loan.email}</span>
@@ -418,9 +438,60 @@ export default function Admin() {
                                 {t("adm_btn_reject")}
                               </button>
                             )}
+                            {buildLoanWhatsAppLink(loan) ? (
+                              <a
+                                href={buildLoanWhatsAppLink(loan)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="adm-btn-whatsapp"
+                              >
+                                {t("adm_btn_whatsapp")}
+                              </a>
+                            ) : (
+                              <button className="adm-btn-whatsapp" disabled title="Aucun numero WhatsApp">
+                                {t("adm_btn_whatsapp")}
+                              </button>
+                            )}
+                            <button
+                              className="adm-btn-details"
+                              onClick={() => setExpandedLoanId((id) => (id === loan._id ? null : loan._id))}
+                            >
+                              {expandedLoanId === loan._id ? t("adm_btn_hide_details") : t("adm_btn_details")}
+                            </button>
                           </div>
                         </td>
                       </tr>
+                      {expandedLoanId === loan._id && (
+                        <tr className="adm-details-row">
+                          <td colSpan="6">
+                            <div className="adm-loan-details">
+                              <div className="adm-loan-details-grid">
+                                <div><span className="adm-details-label">{t("adm_th_phone")}</span><span>{loan.phoneNumber || "—"}</span></div>
+                                <div><span className="adm-details-label">{t("adm_th_email")}</span><span>{loan.email || "—"}</span></div>
+                                <div><span className="adm-details-label">{t("loan_country")}</span><span>{loan.country || "—"}</span></div>
+                                <div><span className="adm-details-label">{t("loan_city")}</span><span>{loan.city || "—"}</span></div>
+                                <div><span className="adm-details-label">{t("loan_neighborhood")}</span><span>{loan.neighborhood || "—"}</span></div>
+                                <div><span className="adm-details-label">{t("loan_profession")}</span><span>{loan.profession || "—"}</span></div>
+                              </div>
+                              <div className="adm-loan-documents">
+                                <span className="adm-details-label">{t("adm_th_documents")}</span>
+                                {loan.documents?.length > 0 ? (
+                                  <div className="adm-loan-documents-list">
+                                    {loan.documents.map((doc, idx) => (
+                                      <a key={idx} href={doc.url} target="_blank" rel="noopener noreferrer" className="adm-doc-link">
+                                        {doc.label}
+                                      </a>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <span className="adm-sub">{t("adm_no_documents")}</span>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                      </Fragment>
                     ))}
                   </tbody>
                 </table>

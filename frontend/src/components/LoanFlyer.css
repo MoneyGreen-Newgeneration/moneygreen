@@ -1,0 +1,274 @@
+.loan-flyer-frame {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.loan-flyer-dark {
+  background: #12151a;
+}
+
+.loan-flyer-light {
+  background: #eef6f0;
+}
+
+.loan-flyer-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1rem;
+}
+
+.loan-flyer-brand {
+  font-family: "Archivo", "Inter", sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  color: #f3f6f4;
+}
+
+.loan-flyer-light .loan-flyer-brand {
+  color: #1c1f1d;
+}
+
+.loan-flyer-brand strong {
+  color: #3fc466;
+}
+
+.loan-flyer-stage {
+  width: 100%;
+}
+
+.loan-flyer-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.loan-flyer-footer {
+  padding: 0.8rem 1rem 1rem;
+  background: linear-gradient(135deg, #1e8a3e, #15602b);
+  display: flex;
+  justify-content: center;
+}
+
+.loan-flyer-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+  animation: lf-badge-pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes lf-badge-pulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+/* ===== Auto ===== */
+.lf-gauge-arc {
+  stroke-dashoffset: 188.5;
+  animation: lf-draw 1.4s ease-out 0.3s forwards;
+}
+
+@keyframes lf-draw {
+  to { stroke-dashoffset: 15; }
+}
+
+.lf-headlight {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lf-headlight-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes lf-headlight-pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+.lf-road-line {
+  animation: lf-road 1s linear infinite;
+}
+
+@keyframes lf-road {
+  to { stroke-dashoffset: -36; }
+}
+
+.lf-car {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lf-bob 2.4s ease-in-out infinite;
+}
+
+@keyframes lf-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* ===== Immobilier ===== */
+.lf-sun {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lf-spin 16s linear infinite;
+}
+
+@keyframes lf-spin {
+  to { transform: rotate(360deg); }
+}
+
+.lf-house {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  opacity: 0;
+  animation: lf-rise 0.7s ease-out forwards;
+}
+
+@keyframes lf-rise {
+  from { transform: translateY(14px) scale(0.96); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.lf-bar {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: lf-grow 0.9s ease-out both;
+}
+
+.lf-bar-1 { animation-delay: 0.5s; }
+.lf-bar-2 { animation-delay: 0.65s; }
+.lf-bar-3 { animation-delay: 0.8s; }
+
+@keyframes lf-grow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+.lf-stamp {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: lf-stamp-in 0.6s cubic-bezier(.34,1.56,.64,1) 0.5s both;
+}
+
+@keyframes lf-stamp-in {
+  from { transform: scale(2.2) rotate(-25deg); opacity: 0; }
+  to { transform: scale(1) rotate(-12deg); opacity: 1; }
+}
+
+/* ===== Scolaire ===== */
+.lf-star {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lf-twinkle 2.6s ease-in-out infinite;
+}
+
+.lf-star-1 { animation-delay: 0s; }
+.lf-star-2 { animation-delay: 0.4s; }
+.lf-star-3 { animation-delay: 0.8s; }
+.lf-star-4 { animation-delay: 1.2s; }
+.lf-star-5 { animation-delay: 1.6s; }
+
+@keyframes lf-twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.3); }
+}
+
+.lf-medal {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: lf-pop-in 0.6s cubic-bezier(.34,1.56,.64,1) 0.4s forwards,
+             lf-medal-pulse 3s ease-in-out 1.2s infinite;
+}
+
+@keyframes lf-pop-in {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes lf-medal-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+.lf-book {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lf-breathe 4s ease-in-out infinite;
+}
+
+@keyframes lf-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.lf-cap {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lf-float 3.2s ease-in-out infinite;
+}
+
+@keyframes lf-float {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-6px) rotate(4deg); }
+}
+
+/* ===== Personnel ===== */
+.lf-coin {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.lf-coin-1 { animation: lf-float2 3s ease-in-out infinite; }
+.lf-coin-2 { animation: lf-float2 3.6s ease-in-out 0.3s infinite; }
+.lf-coin-3 { animation: lf-float2 2.6s ease-in-out 0.6s infinite; }
+
+@keyframes lf-float2 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+.lf-trend {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: lf-trend-draw 1.6s ease-out 0.2s forwards;
+}
+
+@keyframes lf-trend-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+.lf-trend-dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: lf-dot-in 0.5s ease-out 1.7s forwards,
+             lf-dot-pulse 2s ease-in-out 2.3s infinite;
+}
+
+@keyframes lf-dot-in {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes lf-dot-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.25); }
+}
+
+.lf-check {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: lf-pop-in 0.6s cubic-bezier(.34,1.56,.64,1) 0.6s forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loan-flyer-frame * {
+    animation: none !important;
+  }
+  .lf-gauge-arc { stroke-dashoffset: 15; }
+  .lf-trend { stroke-dashoffset: 0; }
+  .lf-house, .lf-stamp, .lf-medal, .lf-check, .lf-trend-dot { opacity: 1; transform: none; }
+  .lf-bar { transform: scaleY(1); }
+}

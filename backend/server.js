@@ -39,6 +39,7 @@ const adminRoutes = require("./routes/admin.routes");
 const chatRoutes = require("./routes/chat.routes");
 const uploadRoutes = require("./routes/upload.routes");
 const teamchatRoutes = require("./routes/teamchat.routes");
+const analyticsRoutes = require("./routes/analytics.routes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/transactions", transactionRoutes);
@@ -48,6 +49,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/teamchat", teamchatRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 const Message = require("./models/Message");
 const TeamMessage = require("./models/TeamMessage");
