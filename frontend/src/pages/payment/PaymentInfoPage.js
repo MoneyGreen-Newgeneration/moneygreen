@@ -72,6 +72,7 @@ export default function PaymentInfoPage() {
                 {info.mtnNumber && (
                   <div className="pay-info-card pay-info-mtn">
                     <div className="pay-info-card-head">
+                      {info.mtnLogoUrl && <img src={info.mtnLogoUrl} alt="" className="pay-info-logo" />}
                       <span className="pay-info-tag">{t("pay_mtn")}</span>
                     </div>
                     <p className="pay-info-number">{info.mtnNumber}</p>
@@ -81,10 +82,21 @@ export default function PaymentInfoPage() {
                 {info.orangeNumber && (
                   <div className="pay-info-card pay-info-orange">
                     <div className="pay-info-card-head">
+                      {info.orangeLogoUrl && <img src={info.orangeLogoUrl} alt="" className="pay-info-logo" />}
                       <span className="pay-info-tag">{t("pay_orange")}</span>
                     </div>
                     <p className="pay-info-number">{info.orangeNumber}</p>
                     {info.orangeName && <p className="pay-info-name">{info.orangeName}</p>}
+                  </div>
+                )}
+                {info.waveNumber && (
+                  <div className="pay-info-card pay-info-wave">
+                    <div className="pay-info-card-head">
+                      {info.waveLogoUrl && <img src={info.waveLogoUrl} alt="" className="pay-info-logo" />}
+                      <span className="pay-info-tag">{t("pay_wave")}</span>
+                    </div>
+                    <p className="pay-info-number">{info.waveNumber}</p>
+                    {info.waveName && <p className="pay-info-name">{info.waveName}</p>}
                   </div>
                 )}
                 {info.accountNumber && (

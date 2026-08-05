@@ -41,4 +41,19 @@ const uploadLoanDocument = async (req, res) => {
   }
 };
 
-module.exports = { uploadChatImage, uploadLoanDocument };
+// Logo d'un operateur de paiement (MTN, Orange, Wave...), uploade par un
+// admin une fois qu'il a l'autorisation de la marque concernee. Reserve aux
+// admins par la route (protect + isAdmin) : jamais expose au client.
+const uploadPaymentLogo = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "Aucun fichier envoyé." });
+    }
+    const result = await streamUpload(req.file.buffer, { folder: "moneygreen/payment-logos" });
+    res.json({ url: result.secure_url });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { uploadChatImage, uploadLoanDocument, uploadPaymentLogo };

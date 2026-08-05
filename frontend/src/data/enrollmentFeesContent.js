@@ -29,7 +29,7 @@ export const ENROLLMENT_FEES_BODY_FR = [
       "Ils sont exigés uniquement pour le traitement administratif de votre demande.",
       "Le paiement de ces frais ne garantit pas automatiquement l'approbation du prêt. Chaque dossier reste soumis à une analyse conformément à la politique de financement de Money Green.",
       "Le montant des frais est communiqué au client avant toute validation.",
-      "Ces frais seront remboursés directement si vos informations fournies son de sources douteuse, c'est-à-dire non correctes.",
+      "Ces frais seront remboursés directement si les informations que vous avez fournies s'avèrent incorrectes ou proviennent de sources douteuses.",
     ],
   },
   {

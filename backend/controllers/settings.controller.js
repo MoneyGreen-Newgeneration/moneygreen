@@ -8,8 +8,13 @@ const getPaymentInfo = async (req, res) => {
       mtnName: "",
       orangeNumber: "",
       orangeName: "",
+      waveNumber: "",
+      waveName: "",
       accountNumber: "",
       accountName: "",
+      mtnLogoUrl: "",
+      orangeLogoUrl: "",
+      waveLogoUrl: "",
       montant: 10000,
     };
     res.json(setting ? setting.value : defaultInfo);
@@ -20,8 +25,12 @@ const getPaymentInfo = async (req, res) => {
 
 const updatePaymentInfo = async (req, res) => {
   try {
-    const { mtnNumber, mtnName, orangeNumber, orangeName, accountNumber, accountName, montant } = req.body;
-    const value = { mtnNumber, mtnName, orangeNumber, orangeName, accountNumber, accountName, montant: Number(montant) || 10000 };
+    const { mtnNumber, mtnName, orangeNumber, orangeName, waveNumber, waveName, accountNumber, accountName, mtnLogoUrl, orangeLogoUrl, waveLogoUrl, montant } = req.body;
+    const value = {
+      mtnNumber, mtnName, orangeNumber, orangeName, waveNumber, waveName, accountNumber, accountName,
+      mtnLogoUrl, orangeLogoUrl, waveLogoUrl,
+      montant: Number(montant) || 10000,
+    };
     await Settings.findOneAndUpdate(
       { key: "paymentInfo" },
       { value },

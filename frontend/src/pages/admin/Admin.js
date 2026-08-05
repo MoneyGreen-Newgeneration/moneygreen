@@ -14,6 +14,9 @@ import {
   confirmLoanPayment,
   fetchPaymentInfo,
   updatePaymentInfo,
+  uploadPaymentLogo,
+  fetchVisitorStats,
+  fetchRecentVisitors,
 } from "../../api/admin";
 import MoneyGreenMark from "../../components/MoneyGreenMark";
 import DarkModeToggle from "../../components/DarkModeToggle";
@@ -42,8 +45,12 @@ export default function Admin() {
   const [error, setError] = useState("");
   const [updating, setUpdating] = useState(null);
   const [expandedLoanId, setExpandedLoanId] = useState(null);
-  const [paymentInfo, setPaymentInfo] = useState({ mtnNumber: "", mtnName: "", orangeNumber: "", orangeName: "", accountNumber: "", accountName: "", montant: 10000 });
+  const [paymentInfo, setPaymentInfo] = useState({
+    mtnNumber: "", mtnName: "", orangeNumber: "", orangeName: "", waveNumber: "", waveName: "",
+    accountNumber: "", accountName: "", mtnLogoUrl: "", orangeLogoUrl: "", waveLogoUrl: "", montant: 10000,
+  });
   const [paymentMsg, setPaymentMsg] = useState("");
+  const [logoUploading, setLogoUploading] = useState({});
 
   // --- CHAT (centralisé ici pour que le badge reste à jour même hors de l'onglet Chat) ---
   const [conversations, setConversations] = useState([]);
@@ -52,6 +59,11 @@ export default function Admin() {
   useEffect(() => { selectedUserIdRef.current = selectedUserId; }, [selectedUserId]);
   const [chatMessages, setChatMessages] = useState([]);
   const [onlineMap, setOnlineMap] = useState({});
+
+  // --- VISITEURS (presence en direct + historique) ---
+  const [liveVisitors, setLiveVisitors] = useState({ total: 0, identified: [], anonymousCount: 0 });
+  const [visitorStats, setVisitorStats] = useState(null);
+  const [recentVisitors, setRecentVisitors] = useState([]);
 
   const totalUnread = conversations.reduce((sum, c) => sum + (c.unread || 0), 0);
 
@@ -112,6 +124,10 @@ export default function Admin() {
       setTeamMessages(prev => [...prev, msg]);
     });
 
+    adminSocket.on("live_visitors", (data) => {
+      setLiveVisitors(data);
+    });
+
     return () => adminSocket.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -120,18 +136,22 @@ export default function Admin() {
     setLoading(true);
     setError("");
     try {
-      const [statsData, usersData, loansData, txData, paymentData] = await Promise.all([
+      const [statsData, usersData, loansData, txData, paymentData, visitorStatsData, recentVisitorsData] = await Promise.all([
         fetchStats(),
         fetchAllUsers(),
         fetchAllLoans(),
         fetchAllTransactions(),
         fetchPaymentInfo(),
+        fetchVisitorStats(),
+        fetchRecentVisitors(),
       ]);
       setStats(statsData);
       setPaymentInfo(paymentData);
       setUsers(usersData);
       setLoans(loansData);
       setTransactions(txData);
+      setVisitorStats(visitorStatsData);
+      setRecentVisitors(recentVisitorsData.visitors || []);
     } catch {
       setError(t("adm_load_error"));
     } finally {
@@ -247,6 +267,20 @@ export default function Admin() {
     }
   };
 
+  const handleLogoUpload = (key) => async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setLogoUploading((prev) => ({ ...prev, [key]: true }));
+    try {
+      const { url } = await uploadPaymentLogo(file);
+      setPaymentInfo((prev) => ({ ...prev, [`${key}LogoUrl`]: url }));
+    } catch {
+      setError(t("adm_logo_upload_error"));
+    } finally {
+      setLogoUploading((prev) => ({ ...prev, [key]: false }));
+    }
+  };
+
   const handleUpdatePaymentInfo = async () => {
     try {
       const updated = await updatePaymentInfo(paymentInfo);
@@ -275,6 +309,26 @@ export default function Admin() {
     personnel: t("prod_per_label"),
   };
 
+  const eventLabel = {
+    home_view: "Accueil",
+    signup_view: "Vue inscription", signup_submit: "Inscription envoyee", signup_success: "Inscription reussie", signup_error: "Echec inscription",
+    login_view: "Vue connexion", login_submit: "Connexion tentee", login_success: "Connexion reussie", login_error: "Echec connexion",
+    loan_page_view: "Vue page pret", loan_form_submit: "Demande de pret envoyee", loan_success: "Pret cree", loan_error: "Echec demande de pret",
+    loan_document_upload_error: "Echec upload document",
+    dashboard_view: "Vue dashboard",
+  };
+
+  const timeAgo = (date) => {
+    const diffMs = Date.now() - new Date(date).getTime();
+    const min = Math.floor(diffMs / 60000);
+    if (min < 1) return "a l'instant";
+    if (min < 60) return `il y a ${min} min`;
+    const h = Math.floor(min / 60);
+    if (h < 24) return `il y a ${h} h`;
+    const d = Math.floor(h / 24);
+    return `il y a ${d} j`;
+  };
+
   const loanCounts = {
     total: loans.length,
     pending: loans.filter(l => l.status === "pending").length,
@@ -283,6 +337,7 @@ export default function Admin() {
   };
 
   const tabs = [
+    { key: "visitors", label: "👁️ Visiteurs" },
     { key: "loans", label: t("adm_tab_loans") },
     { key: "users", label: t("adm_tab_users") },
     { key: "transactions", label: t("adm_tab_tx") },
@@ -368,6 +423,97 @@ export default function Admin() {
           <p className="adm-loading">{t("adm_loading")}</p>
         ) : (
           <>
+            {/* VISITEURS */}
+            {activeTab === "visitors" && (
+              <div className="adm-visitors">
+                <div className="adm-visitors-live">
+                  <div className="adm-stat adm-stat-live">
+                    <span className="adm-stat-label">En ligne actuellement</span>
+                    <span className="adm-stat-value green">{liveVisitors.total}</span>
+                    <span className="adm-sub">
+                      {liveVisitors.identified.length} identifie{liveVisitors.identified.length > 1 ? "s" : ""} · {liveVisitors.anonymousCount} anonyme{liveVisitors.anonymousCount > 1 ? "s" : ""}
+                    </span>
+                  </div>
+                  {liveVisitors.identified.length > 0 && (
+                    <div className="adm-visitors-online-list">
+                      {liveVisitors.identified.map((v) => (
+                        <span key={v.userId} className="adm-online-pill">
+                          <span className="adm-online-dot" /> {v.username || "Compte inconnu"}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="adm-stats">
+                  {[
+                    { label: "Visiteurs uniques (24h)", value: visitorStats?.uniqueVisitors?.last24h ?? "…" },
+                    { label: "Visiteurs uniques (7j)", value: visitorStats?.uniqueVisitors?.last7d ?? "…" },
+                    { label: "Visiteurs uniques (30j)", value: visitorStats?.uniqueVisitors?.last30d ?? "…" },
+                  ].map((s) => (
+                    <div key={s.label} className="adm-stat">
+                      <span className="adm-stat-label">{s.label}</span>
+                      <span className="adm-stat-value">{s.value}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="adm-table-wrap">
+                  <h3 className="adm-visitors-subtitle">Repartition par page (30 jours)</h3>
+                  <table className="adm-table">
+                    <thead>
+                      <tr>
+                        <th>Page / etape</th>
+                        <th>Visiteurs uniques</th>
+                        <th>Evenements</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {!visitorStats || visitorStats.events.length === 0 ? (
+                        <tr><td colSpan="3" className="adm-empty">Aucune donnee pour le moment.</td></tr>
+                      ) : visitorStats.events.map((ev) => (
+                        <tr key={ev.name}>
+                          <td>{eventLabel[ev.name] || ev.name}</td>
+                          <td>{ev.uniqueVisitors}</td>
+                          <td className="adm-sub">{ev.count}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="adm-table-wrap">
+                  <h3 className="adm-visitors-subtitle">Derniers visiteurs</h3>
+                  <table className="adm-table">
+                    <thead>
+                      <tr>
+                        <th>Visiteur</th>
+                        <th>Derniere action</th>
+                        <th>Quand</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {recentVisitors.length === 0 ? (
+                        <tr><td colSpan="3" className="adm-empty">Aucun visiteur recent.</td></tr>
+                      ) : recentVisitors.map((v) => (
+                        <tr key={v.anonId}>
+                          <td>
+                            {v.name ? (
+                              <span className="adm-name">{v.name}</span>
+                            ) : (
+                              <span className="adm-sub">Visiteur anonyme</span>
+                            )}
+                          </td>
+                          <td>{eventLabel[v.lastEvent] || v.lastEvent}</td>
+                          <td className="adm-sub">{timeAgo(v.at)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
             {/* TABLEAU PRETS */}
             {activeTab === "loans" && (
               <div className="adm-table-wrap">
@@ -626,30 +772,55 @@ export default function Admin() {
                 </p>
                 {paymentMsg && <p className="adm-success">{paymentMsg}</p>}
 
+                <label className="adm-field adm-payment-amount">
+                  <span>{t("adm_payment_amount")}</span>
+                  <input type="number" min="0" value={paymentInfo.montant} onChange={e => setPaymentInfo(p => ({...p, montant: e.target.value}))} />
+                </label>
+
+                {[
+                  { key: "mtn", numberKey: "adm_mtn_number", nameKey: "adm_mtn_name", numberPh: "6XXXXXXXX" },
+                  { key: "orange", numberKey: "adm_orange_number", nameKey: "adm_orange_name", numberPh: "6XXXXXXXX" },
+                  { key: "wave", numberKey: "adm_wave_number", nameKey: "adm_wave_name", numberPh: "7XXXXXXXX" },
+                ].map((op) => {
+                  const logoUrl = paymentInfo[`${op.key}LogoUrl`];
+                  const inputId = `adm-logo-upload-${op.key}`;
+                  return (
+                    <div key={op.key} className="adm-payment-operator">
+                      <div className="adm-form-grid">
+                        <label className="adm-field">
+                          <span>{t(op.numberKey)}</span>
+                          <input type="text" placeholder={op.numberPh} value={paymentInfo[`${op.key}Number`] || ""} onChange={e => setPaymentInfo(p => ({...p, [`${op.key}Number`]: e.target.value}))} />
+                        </label>
+                        <label className="adm-field">
+                          <span>{t(op.nameKey)}</span>
+                          <input type="text" placeholder="JEAN DUPONT" value={paymentInfo[`${op.key}Name`] || ""} onChange={e => setPaymentInfo(p => ({...p, [`${op.key}Name`]: e.target.value}))} />
+                        </label>
+                      </div>
+                      <div className="adm-logo-upload">
+                        {logoUrl ? (
+                          <img src={logoUrl} alt="" className="adm-logo-preview" />
+                        ) : (
+                          <span className="adm-logo-placeholder">{t("adm_logo_none")}</span>
+                        )}
+                        <input
+                          id={inputId}
+                          type="file"
+                          accept="image/*"
+                          className="adm-logo-upload-input"
+                          onChange={handleLogoUpload(op.key)}
+                        />
+                        <label htmlFor={inputId} className="adm-logo-upload-btn">
+                          {logoUrl ? t("adm_logo_replace") : t("adm_logo_upload")}
+                        </label>
+                        {logoUploading[op.key] && (
+                          <span className="adm-logo-upload-status">{t("adm_logo_uploading")}</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+
                 <div className="adm-form-grid">
-                  <label className="adm-field">
-                    <span>{t("adm_payment_amount")}</span>
-                    <input type="number" min="0" value={paymentInfo.montant} onChange={e => setPaymentInfo(p => ({...p, montant: e.target.value}))} />
-                  </label>
-
-                  <label className="adm-field">
-                    <span>{t("adm_mtn_number")}</span>
-                    <input type="text" placeholder="6XXXXXXXX" value={paymentInfo.mtnNumber} onChange={e => setPaymentInfo(p => ({...p, mtnNumber: e.target.value}))} />
-                  </label>
-                  <label className="adm-field">
-                    <span>{t("adm_mtn_name")}</span>
-                    <input type="text" placeholder="JEAN DUPONT" value={paymentInfo.mtnName} onChange={e => setPaymentInfo(p => ({...p, mtnName: e.target.value}))} />
-                  </label>
-
-                  <label className="adm-field">
-                    <span>{t("adm_orange_number")}</span>
-                    <input type="text" placeholder="6XXXXXXXX" value={paymentInfo.orangeNumber} onChange={e => setPaymentInfo(p => ({...p, orangeNumber: e.target.value}))} />
-                  </label>
-                  <label className="adm-field">
-                    <span>{t("adm_orange_name")}</span>
-                    <input type="text" placeholder="JEAN DUPONT" value={paymentInfo.orangeName} onChange={e => setPaymentInfo(p => ({...p, orangeName: e.target.value}))} />
-                  </label>
-
                   <label className="adm-field">
                     <span>{t("adm_account_number")}</span>
                     <input type="text" placeholder="00000000000" value={paymentInfo.accountNumber} onChange={e => setPaymentInfo(p => ({...p, accountNumber: e.target.value}))} />

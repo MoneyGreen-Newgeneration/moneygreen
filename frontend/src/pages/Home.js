@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { io } from "socket.io-client";
 import { useAuth } from "../context/AuthContext";
 import { useLang } from "../context/LangContext";
 import { Link } from "react-router-dom";
@@ -10,6 +11,8 @@ import "./Home.css";
 import PromoBanner from "../components/PromoBanner";
 import AgencyGallery from "../components/AgencyGallery";
 import CompanyPresentation from "../components/CompanyPresentation";
+import { track } from "../api/analytics";
+import { SOCKET_URL } from "../config";
 
 const PRODUCT_IDS = ["auto","immobilier","scolaire","personnel"];
 const TESTI_IDS = Array.from({ length: 25 }, (_, i) => i + 1);
@@ -178,6 +181,16 @@ export default function Home() {
       setActiveProduct((prev) => (prev + 1) % PRODUCT_IDS.length);
     }, 4000);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => { track("home_view"); }, []);
+
+  // Connexion socket sans token : compte ce visiteur (identifie ou non) en
+  // temps reel dans le panneau admin, sans exiger de compte. Le serveur
+  // n'accorde aucun privilege a un socket non authentifie.
+  useEffect(() => {
+    const presenceSocket = io(SOCKET_URL);
+    return () => presenceSocket.disconnect();
   }, []);
 
   const products = [

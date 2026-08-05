@@ -53,44 +53,79 @@ app.use("/api/analytics", analyticsRoutes);
 
 const Message = require("./models/Message");
 const TeamMessage = require("./models/TeamMessage");
+const User = require("./models/User");
 
-const onlineClients = new Map();
+const onlineClients = new Map(); // userId -> Set(socketId)
+const onlineClientNames = new Map(); // userId -> username, pour la liste admin
 const onlineAdmins = new Set();
+const anonymousSockets = new Set(); // socket.id des visiteurs non connectes (site public)
 
 // ===== SECURITE SOCKET.IO =====
-// Chaque connexion socket doit presenter un token JWT valide (envoye par le
-// frontend via `io(url, { auth: { token } })`). Sans ca, la connexion est refusee.
-// On ne fait plus jamais confiance a un userId/isAdmin envoye dans les evenements :
-// on utilise uniquement socket.user, derive du token verifie.
+// Un token JWT valide (envoye via `io(url, { auth: { token } })`) identifie
+// le socket comme client ou admin (socket.user rempli). Sans token, la
+// connexion est quand meme acceptee mais socket.user reste null : ca permet
+// de compter les visiteurs anonymes du site public (page d'accueil) en temps
+// reel, mais toute action sensible (chat, jointure a une room) reste
+// verrouillee derriere `if (!socket.user) return;` dans chaque handler.
 io.use((socket, next) => {
   const token = socket.handshake.auth?.token;
-  if (!token) return next(new Error("Authentification requise"));
+  if (!token) {
+    socket.user = null;
+    return next();
+  }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     socket.user = { id: decoded.id, isAdmin: !!decoded.isAdmin };
     next();
   } catch (err) {
-    next(new Error("Session invalide ou expirÃƒÆ’Ã‚Â©e"));
+    socket.user = null;
+    next();
   }
 });
 
-io.on("connection", (socket) => {
-  console.log("Socket connectÃƒÆ’Ã‚Â©:", socket.id, socket.user.isAdmin ? "(admin)" : "");
+function broadcastLiveVisitors() {
+  const identified = Array.from(onlineClients.keys()).map((userId) => ({
+    userId,
+    username: onlineClientNames.get(userId) || null,
+  }));
+  io.to("admin").emit("live_visitors", {
+    total: identified.length + anonymousSockets.size,
+    identified,
+    anonymousCount: anonymousSockets.size,
+  });
+}
 
-  socket.on("join", () => {
-    if (socket.user.isAdmin) return; // un admin n'a pas de room "client"
+io.on("connection", (socket) => {
+  console.log("Socket connectÃƒÆ’Ã‚Â©:", socket.id, socket.user?.isAdmin ? "(admin)" : socket.user ? "(client)" : "(anonyme)");
+
+  if (!socket.user) {
+    anonymousSockets.add(socket.id);
+    broadcastLiveVisitors();
+  }
+
+  socket.on("join", async () => {
+    if (!socket.user || socket.user.isAdmin) return; // un admin n'a pas de room "client"
     const userId = socket.user.id;
     socket.join(userId);
     socket.data.userId = userId;
     if (!onlineClients.has(userId)) onlineClients.set(userId, new Set());
     onlineClients.get(userId).add(socket.id);
+    if (!onlineClientNames.has(userId)) {
+      try {
+        const u = await User.findById(userId).select("username");
+        if (u) onlineClientNames.set(userId, u.username);
+      } catch (err) {
+        console.error("Erreur lecture username pour presence:", err.message);
+      }
+    }
     io.to("admin").emit("user_status", { userId, online: true });
     // etat actuel de l'admin, envoye tout de suite (plus besoin de rafraichir)
     socket.emit("admin_status", { online: onlineAdmins.size > 0 });
+    broadcastLiveVisitors();
   });
 
   socket.on("join_admin", () => {
-    if (!socket.user.isAdmin) return; // securite : reserve aux admins
+    if (!socket.user || !socket.user.isAdmin) return; // securite : reserve aux admins
     socket.join("admin");
     socket.data.isAdmin = true;
     const wasEmpty = onlineAdmins.size === 0;
@@ -98,9 +133,18 @@ io.on("connection", (socket) => {
     if (wasEmpty) io.emit("admin_status", { online: true });
     // liste des clients actuellement en ligne, envoyee tout de suite
     socket.emit("online_users", Array.from(onlineClients.keys()));
+    socket.emit("live_visitors", {
+      total: onlineClients.size + anonymousSockets.size,
+      identified: Array.from(onlineClients.keys()).map((userId) => ({
+        userId,
+        username: onlineClientNames.get(userId) || null,
+      })),
+      anonymousCount: anonymousSockets.size,
+    });
   });
 
   socket.on("typing", ({ userId }) => {
+    if (!socket.user) return;
     if (socket.user.isAdmin) {
       if (!userId) return;
       io.to(userId).emit("typing", { sender: "admin" });
@@ -112,6 +156,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("stop_typing", ({ userId }) => {
+    if (!socket.user) return;
     if (socket.user.isAdmin) {
       if (!userId) return;
       io.to(userId).emit("stop_typing", { sender: "admin" });
@@ -123,17 +168,17 @@ io.on("connection", (socket) => {
   });
 
   socket.on("team_typing", ({ senderName }) => {
-    if (!socket.user.isAdmin) return;
+    if (!socket.user || !socket.user.isAdmin) return;
     socket.to("admin").emit("team_typing", { senderId: socket.user.id, senderName });
   });
 
   socket.on("team_stop_typing", () => {
-    if (!socket.user.isAdmin) return;
+    if (!socket.user || !socket.user.isAdmin) return;
     socket.to("admin").emit("team_stop_typing", { senderId: socket.user.id });
   });
 
   socket.on("client_message", async ({ text, imageUrl, replyTo }) => {
-    if (socket.user.isAdmin) return;
+    if (!socket.user || socket.user.isAdmin) return;
     try {
       const userId = socket.user.id;
       let replyPreview = undefined;
@@ -150,7 +195,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("admin_message", async ({ userId, text, imageUrl, replyTo }) => {
-    if (!socket.user.isAdmin) return;
+    if (!socket.user || !socket.user.isAdmin) return;
     try {
       let replyPreview = undefined;
       if (replyTo) {
@@ -166,6 +211,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("delete_message", async ({ messageId, userId }) => {
+    if (!socket.user) return;
     try {
       const original = await Message.findById(messageId);
       if (!original) return;
@@ -182,7 +228,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("team_message", async ({ senderName, text, imageUrl, replyTo }) => {
-    if (!socket.user.isAdmin) return;
+    if (!socket.user || !socket.user.isAdmin) return;
     try {
       const senderId = socket.user.id;
       let replyPreview = undefined;
@@ -198,7 +244,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("delete_team_message", async ({ messageId }) => {
-    if (!socket.user.isAdmin) return;
+    if (!socket.user || !socket.user.isAdmin) return;
     try {
       const original = await TeamMessage.findById(messageId);
       if (!original || original.senderId !== socket.user.id) return;
@@ -210,7 +256,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("team_mark_read", async () => {
-    if (!socket.user.isAdmin) return;
+    if (!socket.user || !socket.user.isAdmin) return;
     try {
       const userId = socket.user.id;
       await TeamMessage.updateMany(
@@ -224,6 +270,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("mark_read", async ({ userId, reader }) => {
+    if (!socket.user) return;
     try {
       if (reader === "admin" && !socket.user.isAdmin) return;
       if (reader === "client" && socket.user.id !== userId) return;
@@ -242,12 +289,16 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("Socket dÃƒÆ’Ã‚Â©connectÃƒÆ’Ã‚Â©:", socket.id);
+    const wasAnonymous = anonymousSockets.delete(socket.id);
     const { userId, isAdmin } = socket.data;
+    let clientLeft = false;
     if (userId && onlineClients.has(userId)) {
       onlineClients.get(userId).delete(socket.id);
       if (onlineClients.get(userId).size === 0) {
         onlineClients.delete(userId);
+        onlineClientNames.delete(userId);
         io.to("admin").emit("user_status", { userId, online: false, lastSeen: new Date() });
+        clientLeft = true;
       }
     }
     if (isAdmin) {
@@ -256,6 +307,7 @@ io.on("connection", (socket) => {
         io.emit("admin_status", { online: false, lastSeen: new Date() });
       }
     }
+    if (wasAnonymous || clientLeft) broadcastLiveVisitors();
   });
 });
 

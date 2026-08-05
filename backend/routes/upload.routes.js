@@ -1,8 +1,8 @@
 ﻿const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const { protect } = require("../middleware/auth.middleware");
-const { uploadChatImage, uploadLoanDocument } = require("../controllers/upload.controller");
+const { protect, isAdmin } = require("../middleware/auth.middleware");
+const { uploadChatImage, uploadLoanDocument, uploadPaymentLogo } = require("../controllers/upload.controller");
 
 const storage = multer.memoryStorage();
 const upload = multer({
@@ -25,5 +25,6 @@ const uploadDocument = multer({
 
 router.post("/chat-image", protect, upload.single("image"), uploadChatImage);
 router.post("/loan-document", protect, uploadDocument.single("document"), uploadLoanDocument);
+router.post("/payment-logo", protect, isAdmin, upload.single("image"), uploadPaymentLogo);
 
 module.exports = router;

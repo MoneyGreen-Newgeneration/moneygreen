@@ -330,6 +330,99 @@
   margin-bottom: 1rem;
 }
 
+.adm-payment-amount {
+  max-width: 260px;
+  margin-bottom: 1.4rem;
+}
+
+.adm-payment-operator {
+  padding: 1rem 0;
+  border-top: 1px solid rgba(28,31,29,.1);
+}
+
+.adm-payment-operator:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.adm-logo-upload {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 0.7rem;
+}
+
+.adm-logo-preview {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid rgba(28,31,29,.1);
+  background: #fff;
+  padding: 4px;
+}
+
+.adm-logo-placeholder {
+  font-size: .78rem;
+  color: rgba(26,29,27,.45);
+  font-style: italic;
+}
+
+.adm-logo-upload-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.adm-logo-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  background: rgba(30, 138, 62, 0.08);
+  color: #1e8a3e;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid rgba(30, 138, 62, 0.25);
+}
+
+.adm-logo-upload-btn:hover {
+  background: rgba(30, 138, 62, 0.15);
+}
+
+.adm-logo-upload-status {
+  font-size: 0.78rem;
+  color: rgba(26, 29, 27, 0.6);
+}
+
+body.dark-mode .adm-payment-operator {
+  border-top-color: rgba(255,255,255,.1);
+}
+
+body.dark-mode .adm-logo-preview {
+  background: #262b30;
+  border-color: rgba(255,255,255,.1);
+}
+
+body.dark-mode .adm-logo-placeholder,
+body.dark-mode .adm-logo-upload-status {
+  color: rgba(230,232,234,.6);
+}
+
+body.dark-mode .adm-logo-upload-btn {
+  background: rgba(63,196,102,.12);
+  color: #3fc466;
+  border-color: rgba(63,196,102,.3);
+}
+
 @media (max-width: 768px) {
   .adm-form-grid { grid-template-columns: 1fr; }
   .adm-tabs { flex-wrap: wrap; }
@@ -748,4 +841,90 @@ body.dark-mode .adm-details-label {
 body.dark-mode .adm-doc-link {
   background: rgba(63,196,102,.14);
   color: #3fc466;
+}
+
+/* ===== VISITEURS ===== */
+.adm-visitors {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.adm-visitors-live {
+  background: #fff;
+  border: 1px solid rgba(28,31,29,.08);
+  border-radius: 12px;
+  padding: 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+}
+
+.adm-stat-live {
+  border: none;
+  padding: 0;
+  background: none;
+}
+
+.adm-visitors-online-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.adm-online-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  background: rgba(30,138,62,.08);
+  color: #1e8a3e;
+  font-size: .82rem;
+  font-weight: 600;
+  padding: .35rem .7rem;
+  border-radius: 999px;
+}
+
+.adm-online-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #1e8a3e;
+  animation: adm-online-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes adm-online-pulse {
+  0%, 100% { opacity: .5; }
+  50% { opacity: 1; }
+}
+
+.adm-visitors-subtitle {
+  font-size: .85rem;
+  font-weight: 700;
+  color: rgba(26,29,27,.6);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  padding: 1rem 1.1rem 0;
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adm-online-dot { animation: none; }
+}
+
+body.dark-mode .adm-visitors-live {
+  background: #1e2226;
+  border-color: rgba(255,255,255,.08);
+}
+
+body.dark-mode .adm-online-pill {
+  background: rgba(63,196,102,.14);
+  color: #3fc466;
+}
+
+body.dark-mode .adm-online-dot {
+  background: #3fc466;
+}
+
+body.dark-mode .adm-visitors-subtitle {
+  color: rgba(230,232,234,.5);
 }

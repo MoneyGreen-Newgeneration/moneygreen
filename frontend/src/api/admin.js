@@ -18,3 +18,13 @@ export const fetchPaymentInfo = () =>
   api.get("/admin/payment-info").then(r => r.data);
 export const updatePaymentInfo = (data) =>
   api.patch("/admin/payment-info", data).then(r => r.data);
+export const uploadPaymentLogo = async (file) => {
+  const formData = new FormData();
+  formData.append("image", file);
+  const res = await api.post("/upload/payment-logo", formData);
+  return res.data; // { url }
+};
+export const fetchVisitorStats = () =>
+  api.get("/analytics/funnel").then(r => r.data);
+export const fetchRecentVisitors = () =>
+  api.get("/analytics/recent-visitors").then(r => r.data);

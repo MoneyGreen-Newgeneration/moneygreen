@@ -146,7 +146,17 @@
 }
 
 .pay-info-card-head {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
   margin-bottom: .5rem;
+}
+
+.pay-info-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 6px;
 }
 
 .pay-info-tag {
@@ -162,6 +172,7 @@
 
 .pay-info-mtn .pay-info-tag { background: #ffcc00; color: #1c1f1d; }
 .pay-info-orange .pay-info-tag { background: #ff7900; color: #fff; }
+.pay-info-wave .pay-info-tag { background: #00b4d8; color: #fff; }
 .pay-info-account .pay-info-tag { background: #1e8a3e; color: #fff; }
 
 .pay-info-number {
