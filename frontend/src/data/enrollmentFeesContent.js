@@ -6,10 +6,6 @@
 export const ENROLLMENT_FEES_TITLE_FR = "FRAIS D'ENRÔLEMENT";
 
 export const ENROLLMENT_FEES_BODY_FR = [
-  {
-    type: "p",
-    text: "Les frais d'enrôlement sont des frais administratifs uniques permettant l'ouverture et le traitement de votre dossier de demande de prêt.",
-  },
   { type: "p", text: "Ils couvrent notamment :" },
   {
     type: "ul",

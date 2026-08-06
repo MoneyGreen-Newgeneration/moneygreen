@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { io } from "socket.io-client";
 import { Link } from "react-router-dom";
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
 import { useAuth } from "../context/AuthContext";
+import { useSocket } from "../context/SocketContext";
 import { useLang } from "../context/LangContext";
 import {
   fetchBalance, fetchSummary, fetchTransactions,
@@ -18,7 +18,6 @@ import ChatWidget from "../components/chat/ChatWidget";
 import LoanRequestButton from "../components/LoanRequestButton";
 import DashboardNotice from "../components/DashboardNotice";
 import { track } from "../api/analytics";
-import { SOCKET_URL } from "../config";
 import "./Dashboard.css";
 
 const CATEGORY_COLORS = ["#1e8a3e","#3fc466","#15602b","#7bd9a0","#0d3d1d","#a8e8bd"];
@@ -29,6 +28,7 @@ function formatFCFA(value) {
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
+  const socket = useSocket();
   const { t } = useLang();
   const [balance, setBalance] = useState({ income: 0, expense: 0, balance: 0 });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -93,21 +93,16 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    if (!userId) return;
-    const token = localStorage.getItem("token");
-    // Le serveur exige un JWT valide (io.use middleware) : sans lui, la
-    // connexion est rejetÃƒÆ’Ã‚Â©e et les mises ÃƒÆ’Ã‚Â  jour temps rÃƒÆ’Ã‚Â©el des prÃƒÆ’Ã‚Âªts
-    // n'arrivent jamais. Le userId est de toute faÃƒÆ’Ã‚Â§on dÃƒÆ’Ã‚Â©rivÃƒÆ’Ã‚Â© du token
-    // cÃƒÆ’Ã‚Â´tÃƒÆ’Ã‚Â© serveur (socket.user.id), donc pas besoin de le passer ÃƒÆ’Ã‚Â  "join".
-    const dashSocket = io(SOCKET_URL, { auth: { token } });
-    dashSocket.emit("join");
-
-    dashSocket.on("loan_updated", (loan) => {
+    // La connexion (et le "join") sont gérées globalement par SocketProvider,
+    // partagée entre toutes les pages : ici on ne fait qu'écouter les mises
+    // à jour de prêts sur cette connexion existante.
+    if (!socket) return;
+    const handleLoanUpdated = (loan) => {
       setLoans(prev => prev.map(l => l._id === loan._id ? loan : l));
-    });
-
-    return () => dashSocket.disconnect();
-  }, [userId]);
+    };
+    socket.on("loan_updated", handleLoanUpdated);
+    return () => socket.off("loan_updated", handleLoanUpdated);
+  }, [socket]);
 
   const pieData = useMemo(
     () => Object.entries(summary).map(([category, total]) => ({ name: category, value: total })),

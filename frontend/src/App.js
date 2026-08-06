@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { SocketProvider } from "./context/SocketContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { LangProvider } from "./context/LangContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -21,6 +22,7 @@ function App() {
     <ThemeProvider>
       <LangProvider>
       <AuthProvider>
+        <SocketProvider>
         <BrowserRouter>
         <ScrollToTop />
         <Routes>
@@ -37,6 +39,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </BrowserRouter>
+        </SocketProvider>
       </AuthProvider>
     </LangProvider>
     </ThemeProvider>
