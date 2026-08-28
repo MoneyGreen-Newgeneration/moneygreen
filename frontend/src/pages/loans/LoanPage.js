@@ -125,7 +125,12 @@ export default function LoanPage({ type, titleKey, taglineKey, descriptionKey, m
       // Lu par le dashboard pour afficher la notification de confirmation :
       // reste "pending" tant que le client ne l'a pas fermee lui-meme.
       localStorage.setItem(`mg_loan_notice_${user.id}`, "pending");
+      // Lu une seule fois par ChatWidget pour ouvrir automatiquement le chat
+      // a l'arrivee sur le dashboard, ou le client trouve le message de
+      // bienvenue envoye par le backend.
+      localStorage.setItem("mg_open_chat", "1");
       track("loan_success", { type });
+      navigate("/dashboard");
     } catch (err) {
       setError("Votre demande n'a pas pu être envoyée. Réessayez.");
       track("loan_error", { type });

@@ -1,4 +1,5 @@
 ﻿const Loan = require("../models/Loan");
+const Message = require("../models/Message");
 const { sendLoanNotification, sendLoanReceivedEmail } = require("../mailer");
 
 // CREATE LOAN REQUEST
@@ -88,6 +89,27 @@ const createLoan = async (req, res) => {
     if (io) {
       io.to("admin").emit("loan_created", populatedLoan);
     }
+
+    // Message de bienvenue automatique, envoye uniquement au tout premier
+    // contact du client dans le chat (jamais si des messages existent deja
+    // pour lui, pour ne pas le repeter a chaque nouvelle demande de pret).
+    try {
+      const hasMessages = await Message.exists({ userId });
+      if (!hasMessages) {
+        const welcomeMsg = await Message.create({
+          userId,
+          sender: "admin",
+          text: `Bonjour ${fullName}, bienvenue chez MoneyGreen.`,
+        });
+        if (io) {
+          io.to(userId).emit("new_message", welcomeMsg);
+          io.to("admin").emit("new_message", { ...welcomeMsg.toObject(), userId });
+        }
+      }
+    } catch (err) {
+      console.error("Erreur message de bienvenue:", err.message);
+    }
+
     // Ne jamais faire attendre la reponse HTTP sur l'envoi des emails : une
     // lenteur SMTP retarderait (ou ferait echouer via le timeout client) une
     // demande deja bien enregistree. sendLoanNotification/sendLoanReceivedEmail

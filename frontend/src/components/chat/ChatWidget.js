@@ -46,6 +46,16 @@ export default function ChatWidget() {
 
   const unreadCount = messages.filter(m => m.sender === "admin" && !m.read).length;
 
+  // Ouvre automatiquement le chat a l'arrivee depuis une demande de pret
+  // tout juste soumise, ou le client trouve le message de bienvenue.
+  useEffect(() => {
+    if (localStorage.getItem("mg_open_chat") === "1") {
+      setOpen(true);
+      localStorage.removeItem("mg_open_chat");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, open, adminTyping, bottomRef]);
