@@ -1,3 +1,5 @@
+import LinkifiedText from "./LinkifiedText";
+
 export default function MessageItem({
   msg,
   onReply,
@@ -50,7 +52,7 @@ export default function MessageItem({
       </a>
     )}
 
-    {msg.text && <span className="chat-msg-text">{msg.text}</span>}
+    {msg.text && <span className="chat-msg-text"><LinkifiedText text={msg.text} /></span>}
   </>
 )}
   <span className="chat-time">

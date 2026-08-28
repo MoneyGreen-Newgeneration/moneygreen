@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { API_URL } from "../../config";
+import LinkifiedText from "./LinkifiedText";
 import "./Chat.css";
 
 export default function TeamChat({ socket, messages, setMessages }) {
@@ -92,7 +93,7 @@ export default function TeamChat({ socket, messages, setMessages }) {
                     <img src={msg.imageUrl} alt="envoyée" className="chat-msg-image" />
                   </a>
                 )}
-                {msg.text && <span className="chat-msg-text">{msg.text}</span>}
+                {msg.text && <span className="chat-msg-text"><LinkifiedText text={msg.text} /></span>}
                 <span className="chat-time">
                   {new Date(msg.createdAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}
                 </span>

@@ -162,6 +162,17 @@
   border-bottom-left-radius: 4px;
 }
 
+.chat-msg-link {
+  text-decoration: underline;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.chat-msg-client .chat-msg-link { color: #fff; }
+.chat-msg-admin .chat-msg-link { color: #1e8a3e; }
+
+body.dark-mode .chat-msg-admin .chat-msg-link { color: #3fc466; }
+
 .chat-time {
   font-size: .7rem;
   color: rgba(26,29,27,.4);
