@@ -8,7 +8,7 @@ import { useAuth } from "../context/AuthContext";
 import { useSocket } from "../context/SocketContext";
 import { useLang } from "../context/LangContext";
 import {
-  fetchBalance, fetchTransactions,
+  fetchTransactions,
   fetchUserLoans,
 } from "../api/dashboard";
 import MoneyGreenMark from "../components/MoneyGreenMark";
@@ -39,7 +39,6 @@ export default function Dashboard() {
   const { user, logout } = useAuth();
   const socket = useSocket();
   const { t } = useLang();
-  const [balance, setBalance] = useState({ income: 0, expense: 0, balance: 0 });
   const [menuOpen, setMenuOpen] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [loans, setLoans] = useState([]);
@@ -52,11 +51,9 @@ export default function Dashboard() {
     setLoading(true);
     setError("");
     try {
-      const [balanceData, transactionsData, loansData] = await Promise.all([
-        fetchBalance(userId),
+      const [transactionsData, loansData] = await Promise.all([
         fetchTransactions(userId), fetchUserLoans(userId),
       ]);
-      setBalance(balanceData);
       setTransactions(transactionsData);
       setLoans(loansData);
     } catch (err) {
@@ -144,6 +141,15 @@ export default function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loans, t]);
 
+  const loanSummary = useMemo(() => {
+    const pendingCount = loans.filter((l) => l.status === "pending").length;
+    const totalRequested = loans.reduce((sum, l) => sum + (Number(l.amount) || 0), 0);
+    const totalApproved = loans
+      .filter((l) => l.status === "approved")
+      .reduce((sum, l) => sum + (Number(l.amount) || 0), 0);
+    return { pendingCount, totalRequested, totalApproved };
+  }, [loans]);
+
   return (
     <div className="dash">
       <Link to="/" className="dash-home-fab" aria-label="Retour à l'accueil">
@@ -210,16 +216,16 @@ export default function Dashboard() {
 
         <section className="dash-balance-grid">
           <div className="dash-card dash-card-balance mg-enter">
-            <span className="dash-card-label">{t("dash_balance")}</span>
-            <span className="dash-card-value">{loading ? "..." : formatFCFA(balance.balance)}</span>
+            <span className="dash-card-label">{t("dash_pending_requests")}</span>
+            <span className="dash-card-value">{loading ? "..." : loanSummary.pendingCount}</span>
           </div>
           <div className="dash-card mg-enter mg-enter-1">
-            <span className="dash-card-label">{t("dash_income")}</span>
-            <span className="dash-card-value dash-value-income">{loading ? "..." : formatFCFA(balance.income)}</span>
+            <span className="dash-card-label">{t("dash_total_requested")}</span>
+            <span className="dash-card-value">{loading ? "..." : formatFCFA(loanSummary.totalRequested)}</span>
           </div>
           <div className="dash-card mg-enter mg-enter-2">
-            <span className="dash-card-label">{t("dash_expense")}</span>
-            <span className="dash-card-value dash-value-expense">{loading ? "..." : formatFCFA(balance.expense)}</span>
+            <span className="dash-card-label">{t("dash_total_approved")}</span>
+            <span className="dash-card-value dash-value-income">{loading ? "..." : formatFCFA(loanSummary.totalApproved)}</span>
           </div>
         </section>
 
@@ -234,7 +240,7 @@ export default function Dashboard() {
                 <XAxis dataKey="label" stroke="#1a1d1b" />
                 <YAxis stroke="#1a1d1b" />
                 <Tooltip />
-                <Bar dataKey="count" radius={[6, 6, 0, 0]}>
+                <Bar dataKey="count">
                   {loanStatusChartData.map((entry) => (
                     <Cell key={entry.status} fill={LOAN_STATUS_COLORS[entry.status]} />
                   ))}
