@@ -1,37 +1,27 @@
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useLang } from "../context/LangContext";
 import LangSelector from "../components/LangSelector";
 import DarkModeToggle from "../components/DarkModeToggle";
-import { track } from "../api/analytics";
+import { forgotPassword } from "../api/auth";
 
-export default function Login() {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+export default function ForgotPassword() {
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const [sent, setSent] = useState(false);
   const { t } = useLang();
-  const navigate = useNavigate();
-
-  useEffect(() => { track("login_view"); }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
-    track("login_submit");
     try {
-      await login(phoneNumber, password);
-      track("login_success");
-      navigate("/dashboard");
-    } catch (err) {
-      const message = err.response?.data?.message || "Une erreur est survenue. Réessayez.";
-      setError(message);
-      track("login_error", { message });
+      await forgotPassword(email);
+    } catch {
+      // Reponse volontairement generique cote backend : on affiche le succes
+      // meme en cas d'erreur pour ne pas divulguer l'existence d'un compte.
     } finally {
       setLoading(false);
+      setSent(true);
     }
   };
 
@@ -43,34 +33,33 @@ export default function Login() {
         <LangSelector />
         <DarkModeToggle />
       </div>
-      <form className="mg-enter" style={styles.form} onSubmit={handleSubmit}>
-        <h2 style={styles.heading}>{t("login_title")}</h2>
-        {error && <p style={styles.error}>{error}</p>}
-        <label style={styles.label}>
-          {t("login_phone")}
-          <input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} required style={styles.input} placeholder="+237 6XX XXX XXX" />
-        </label>
-        <label style={styles.label}>
-          {t("login_password")}
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={styles.input} />
-        </label>
-        <Link to="/mot-de-passe-oublie" style={{ ...styles.link, fontSize: "0.82rem", alignSelf: "flex-end" }}>
-          {t("login_forgot_password")}
-        </Link>
-        <button
-          type="submit"
-          disabled={loading}
-          aria-busy={loading}
-          className={loading ? "mg-btn-loading" : ""}
-          style={{ ...styles.button, opacity: loading ? 0.85 : 1, cursor: loading ? "not-allowed" : "pointer" }}
-        >
-          {loading && <span className="mg-btn-spinner" aria-hidden="true" />}
-          {loading ? t("login_loading") : t("login_btn")}
-        </button>
+      <div className="mg-enter" style={styles.form}>
+        <h2 style={styles.heading}>{t("forgot_title")}</h2>
+        {sent ? (
+          <p style={styles.text}>{t("forgot_success")}</p>
+        ) : (
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            <p style={styles.text}>{t("forgot_instructions")}</p>
+            <label style={styles.label}>
+              {t("register_email")}
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={styles.input} />
+            </label>
+            <button
+              type="submit"
+              disabled={loading}
+              aria-busy={loading}
+              className={loading ? "mg-btn-loading" : ""}
+              style={{ ...styles.button, opacity: loading ? 0.85 : 1, cursor: loading ? "not-allowed" : "pointer" }}
+            >
+              {loading && <span className="mg-btn-spinner" aria-hidden="true" />}
+              {loading ? t("forgot_sending") : t("forgot_submit")}
+            </button>
+          </form>
+        )}
         <p style={styles.text}>
-          {t("login_no_account")} <Link to="/register" style={styles.link}>{t("login_register")}</Link>
+          <Link to="/login" style={styles.link}>{t("forgot_back_to_login")}</Link>
         </p>
-      </form>
+      </div>
     </div>
   );
 }
@@ -130,7 +119,6 @@ function getStyles() {
       marginTop: "0.5rem",
       transition: "transform var(--mg-duration-fast) var(--mg-ease), background var(--mg-duration-fast) var(--mg-ease), opacity var(--mg-duration-fast) var(--mg-ease)",
     },
-    error: { color: "var(--mg-red)", fontSize: "0.85rem" },
     text: { color: "var(--mg-ink)" },
     link: { color: "var(--mg-accent)" },
   };

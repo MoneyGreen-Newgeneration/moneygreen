@@ -9,6 +9,8 @@ import AdminRoute from "./components/AdminRoute";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import LoanAuto from "./pages/loans/LoanAuto";
 import LoanImmobilier from "./pages/loans/LoanImmobilier";
@@ -29,6 +31,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/mot-de-passe-oublie" element={<ForgotPassword />} />
+          <Route path="/reinitialiser-mot-de-passe" element={<ResetPassword />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/prets/auto" element={<ProtectedRoute><LoanAuto /></ProtectedRoute>} />
           <Route path="/prets/immobilier" element={<ProtectedRoute><LoanImmobilier /></ProtectedRoute>} />

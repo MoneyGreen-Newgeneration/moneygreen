@@ -139,5 +139,26 @@ const sendLoanStatusEmail = async (loan) => {
   }
 };
 
-module.exports = { sendLoanNotification, sendLoanReceivedEmail, sendLoanStatusEmail };
+// Lien de reinitialisation de mot de passe. sendMail peut echouer/etre lent :
+// on ne l'attend jamais dans le chemin de reponse HTTP (voir auth.controller.js).
+const sendPasswordResetEmail = async (user, resetLink) => {
+  try {
+    await transporter.sendMail({
+      from: `"MoneyGreen" <${process.env.EMAIL_FROM}>`,
+      to: user.email,
+      subject: "Réinitialisez votre mot de passe MoneyGreen",
+      html: `
+        <h2>Bonjour ${user.username},</h2>
+        <p>Vous avez demandé la réinitialisation de votre mot de passe. Cliquez sur le lien ci-dessous pour en choisir un nouveau :</p>
+        <p><a href="${resetLink}">${resetLink}</a></p>
+        <p>Ce lien expire dans 1 heure. Si vous n'êtes pas à l'origine de cette demande, ignorez simplement cet email.</p>
+      `,
+    });
+    console.log("Email de reinitialisation envoye");
+  } catch (err) {
+    console.error("Erreur envoi email de reinitialisation:", err.message);
+  }
+};
+
+module.exports = { sendLoanNotification, sendLoanReceivedEmail, sendLoanStatusEmail, sendPasswordResetEmail, FRONTEND_URL };
 

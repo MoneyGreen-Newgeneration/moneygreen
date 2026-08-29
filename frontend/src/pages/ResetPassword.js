@@ -1,41 +1,63 @@
-import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useLang } from "../context/LangContext";
 import LangSelector from "../components/LangSelector";
 import DarkModeToggle from "../components/DarkModeToggle";
-import { track } from "../api/analytics";
+import { resetPassword } from "../api/auth";
 
-export default function Login() {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [password, setPassword] = useState("");
+export default function ResetPassword() {
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get("token");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { applySession } = useAuth();
   const { t } = useLang();
   const navigate = useNavigate();
-
-  useEffect(() => { track("login_view"); }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (newPassword !== confirmPassword) {
+      setError(t("reset_mismatch"));
+      return;
+    }
+
     setLoading(true);
-    track("login_submit");
     try {
-      await login(phoneNumber, password);
-      track("login_success");
+      const data = await resetPassword(token, newPassword);
+      applySession(data.token, data.user);
       navigate("/dashboard");
     } catch (err) {
       const message = err.response?.data?.message || "Une erreur est survenue. Réessayez.";
       setError(message);
-      track("login_error", { message });
     } finally {
       setLoading(false);
     }
   };
 
   const styles = getStyles();
+
+  if (!token) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.topBar}>
+          <LangSelector />
+          <DarkModeToggle />
+        </div>
+        <div className="mg-enter" style={styles.form}>
+          <h2 style={styles.heading}>{t("reset_title")}</h2>
+          <p style={styles.error}>{t("reset_invalid_link")}</p>
+          <p style={styles.text}>
+            <Link to="/mot-de-passe-oublie" style={styles.link}>{t("forgot_title")}</Link>
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={styles.container}>
@@ -44,19 +66,16 @@ export default function Login() {
         <DarkModeToggle />
       </div>
       <form className="mg-enter" style={styles.form} onSubmit={handleSubmit}>
-        <h2 style={styles.heading}>{t("login_title")}</h2>
+        <h2 style={styles.heading}>{t("reset_title")}</h2>
         {error && <p style={styles.error}>{error}</p>}
         <label style={styles.label}>
-          {t("login_phone")}
-          <input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} required style={styles.input} placeholder="+237 6XX XXX XXX" />
+          {t("reset_new_password")}
+          <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required minLength={6} style={styles.input} />
         </label>
         <label style={styles.label}>
-          {t("login_password")}
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={styles.input} />
+          {t("reset_confirm_password")}
+          <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required minLength={6} style={styles.input} />
         </label>
-        <Link to="/mot-de-passe-oublie" style={{ ...styles.link, fontSize: "0.82rem", alignSelf: "flex-end" }}>
-          {t("login_forgot_password")}
-        </Link>
         <button
           type="submit"
           disabled={loading}
@@ -65,11 +84,8 @@ export default function Login() {
           style={{ ...styles.button, opacity: loading ? 0.85 : 1, cursor: loading ? "not-allowed" : "pointer" }}
         >
           {loading && <span className="mg-btn-spinner" aria-hidden="true" />}
-          {loading ? t("login_loading") : t("login_btn")}
+          {loading ? t("reset_submitting") : t("reset_submit")}
         </button>
-        <p style={styles.text}>
-          {t("login_no_account")} <Link to="/register" style={styles.link}>{t("login_register")}</Link>
-        </p>
       </form>
     </div>
   );
