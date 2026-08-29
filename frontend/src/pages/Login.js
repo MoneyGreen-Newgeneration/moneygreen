@@ -54,7 +54,7 @@ export default function Login() {
           {t("login_password")}
           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={styles.input} />
         </label>
-        <Link to="/mot-de-passe-oublie" style={{ ...styles.link, fontSize: "0.82rem", alignSelf: "flex-end" }}>
+        <Link to="/reinitialiser-mot-de-passe" style={{ ...styles.link, fontSize: "0.82rem", alignSelf: "flex-end" }}>
           {t("login_forgot_password")}
         </Link>
         <button

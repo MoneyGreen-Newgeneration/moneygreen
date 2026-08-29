@@ -1,9 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
 const User = require("../models/User");
-const { sendPasswordResetEmail, FRONTEND_URL } = require("../mailer");
 const { buildPhoneCandidates, normalizePhoneForStorage } = require("../utils/phone");
+const { isRateLimited } = require("../utils/rateLimit");
 
 const register = async (req, res) => {
   try {
@@ -107,60 +106,31 @@ const login = async (req, res) => {
   }
 };
 
-// Demande de reinitialisation : on repond toujours le meme message generique,
-// que l'email corresponde ou non a un compte, pour ne pas laisser un
-// attaquant deviner quelles adresses sont enregistrees.
-const forgotPassword = async (req, res) => {
+// Reinitialisation directe par numero de telephone, sans verification
+// supplementaire (email, code...) : choix assume pour reduire au maximum la
+// friction de reconnexion, le numero de telephone servant deja d'identifiant
+// de connexion. Un rate-limit par IP evite qu'un tiers automatise des essais
+// sur de nombreux numeros.
+const resetPasswordByPhone = async (req, res) => {
   try {
-    const { email } = req.body;
-    if (!email) {
-      return res.status(400).json({ message: "Adresse email requise." });
-    }
-
-    const genericMessage = "Si un compte existe avec cette adresse email, un lien de réinitialisation vient de lui être envoyé.";
-
-    const user = await User.findOne({ email });
-    if (user) {
-      const rawToken = crypto.randomBytes(32).toString("hex");
-      user.resetPasswordToken = crypto.createHash("sha256").update(rawToken).digest("hex");
-      user.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1h
-      await user.save();
-
-      const resetLink = `${FRONTEND_URL}/reinitialiser-mot-de-passe?token=${rawToken}`;
-      // Jamais attendu : un envoi lent ne doit pas retarder la reponse, et on
-      // renvoie le meme message que l'email existe ou non.
-      sendPasswordResetEmail(user, resetLink);
-    }
-
-    res.json({ message: genericMessage });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-const resetPassword = async (req, res) => {
-  try {
-    const { token, newPassword } = req.body;
-    if (!token || !newPassword) {
-      return res.status(400).json({ message: "Token et nouveau mot de passe requis." });
+    const { phoneNumber, newPassword } = req.body;
+    if (!phoneNumber || !newPassword) {
+      return res.status(400).json({ message: "Numéro de téléphone et nouveau mot de passe requis." });
     }
     if (newPassword.length < 6) {
       return res.status(400).json({ message: "Le mot de passe doit contenir au moins 6 caractères." });
     }
 
-    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-    const user = await User.findOne({
-      resetPasswordToken: hashedToken,
-      resetPasswordExpires: { $gt: new Date() },
-    }).select("+resetPasswordToken +resetPasswordExpires");
+    if (isRateLimited(req.ip, 8, 15 * 60 * 1000)) {
+      return res.status(429).json({ message: "Trop de tentatives. Réessayez plus tard." });
+    }
 
+    const user = await User.findOne({ phoneNumber: { $in: buildPhoneCandidates(phoneNumber) } });
     if (!user) {
-      return res.status(400).json({ message: "Lien de réinitialisation invalide ou expiré." });
+      return res.status(400).json({ message: "Aucun compte trouvé avec ce numéro de téléphone." });
     }
 
     user.password = await bcrypt.hash(newPassword, 10);
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
     await user.save();
 
     // Reconnecte directement le client : c'est tout l'interet de ce flux
@@ -186,4 +156,4 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { register, login, forgotPassword, resetPassword };
+module.exports = { register, login, resetPasswordByPhone };

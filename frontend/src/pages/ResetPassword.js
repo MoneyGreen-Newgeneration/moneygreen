@@ -1,14 +1,13 @@
 import { useState } from "react";
-import { useNavigate, useSearchParams, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useLang } from "../context/LangContext";
 import LangSelector from "../components/LangSelector";
 import DarkModeToggle from "../components/DarkModeToggle";
-import { resetPassword } from "../api/auth";
+import { resetPasswordByPhone } from "../api/auth";
 
 export default function ResetPassword() {
-  const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -28,7 +27,7 @@ export default function ResetPassword() {
 
     setLoading(true);
     try {
-      const data = await resetPassword(token, newPassword);
+      const data = await resetPasswordByPhone(phoneNumber, newPassword);
       applySession(data.token, data.user);
       navigate("/dashboard");
     } catch (err) {
@@ -41,24 +40,6 @@ export default function ResetPassword() {
 
   const styles = getStyles();
 
-  if (!token) {
-    return (
-      <div style={styles.container}>
-        <div style={styles.topBar}>
-          <LangSelector />
-          <DarkModeToggle />
-        </div>
-        <div className="mg-enter" style={styles.form}>
-          <h2 style={styles.heading}>{t("reset_title")}</h2>
-          <p style={styles.error}>{t("reset_invalid_link")}</p>
-          <p style={styles.text}>
-            <Link to="/mot-de-passe-oublie" style={styles.link}>{t("forgot_title")}</Link>
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div style={styles.container}>
       <div style={styles.topBar}>
@@ -68,6 +49,10 @@ export default function ResetPassword() {
       <form className="mg-enter" style={styles.form} onSubmit={handleSubmit}>
         <h2 style={styles.heading}>{t("reset_title")}</h2>
         {error && <p style={styles.error}>{error}</p>}
+        <label style={styles.label}>
+          {t("login_phone")}
+          <input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} required style={styles.input} placeholder="+237 6XX XXX XXX" />
+        </label>
         <label style={styles.label}>
           {t("reset_new_password")}
           <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required minLength={6} style={styles.input} />
@@ -86,6 +71,9 @@ export default function ResetPassword() {
           {loading && <span className="mg-btn-spinner" aria-hidden="true" />}
           {loading ? t("reset_submitting") : t("reset_submit")}
         </button>
+        <p style={styles.text}>
+          <Link to="/login" style={styles.link}>{t("forgot_back_to_login")}</Link>
+        </p>
       </form>
     </div>
   );
