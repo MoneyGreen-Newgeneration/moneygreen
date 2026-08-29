@@ -106,6 +106,12 @@
   align-items: start;
 }
 
+.loan-content-grid-single {
+  grid-template-columns: 1fr;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
 .loan-card {
   background: var(--mg-surface, #ffffff);
   border-radius: var(--mg-radius-lg, 14px);

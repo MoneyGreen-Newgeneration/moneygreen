@@ -12,7 +12,7 @@ const {
   requestPayment,
   confirmPayment,
 } = require("../controllers/admin.controller");
-const { getPaymentInfo, updatePaymentInfo } = require("../controllers/settings.controller");
+const { getPaymentInfo, updatePaymentInfo, getDocumentsVisibility, updateDocumentsVisibility } = require("../controllers/settings.controller");
 
 router.use(protect, isAdmin);
 
@@ -27,5 +27,7 @@ router.patch("/loans/:id/request-payment", requestPayment);
 router.patch("/loans/:id/confirm-payment", confirmPayment);
 router.get("/payment-info", getPaymentInfo);
 router.patch("/payment-info", updatePaymentInfo);
+router.get("/documents-visibility", getDocumentsVisibility);
+router.patch("/documents-visibility", updateDocumentsVisibility);
 
 module.exports = router;

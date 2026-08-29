@@ -423,21 +423,6 @@ export default function Home() {
               <p>moneygreen@gmail.com</p>
             </div>
           </div>
-          <form className="home-contact-form" onSubmit={(e) => e.preventDefault()}>
-            <label className="home-field">
-              <span>{t("home_contact_name")}</span>
-              <input type="text" required />
-            </label>
-            <label className="home-field">
-              <span>{t("home_contact_email")}</span>
-              <input type="email" required />
-            </label>
-            <label className="home-field">
-              <span>{t("home_contact_msg")}</span>
-              <textarea rows="4" required />
-            </label>
-            <button type="submit" className="home-btn home-btn-primary">{t("home_contact_send")}</button>
-          </form>
         </Reveal>
       </section>
 

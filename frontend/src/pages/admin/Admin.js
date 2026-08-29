@@ -17,6 +17,8 @@ import {
   uploadPaymentLogo,
   fetchVisitorStats,
   fetchRecentVisitors,
+  fetchDocumentsVisibility,
+  updateDocumentsVisibility,
 } from "../../api/admin";
 import MoneyGreenMark from "../../components/MoneyGreenMark";
 import DarkModeToggle from "../../components/DarkModeToggle";
@@ -51,6 +53,8 @@ export default function Admin() {
   });
   const [paymentMsg, setPaymentMsg] = useState("");
   const [logoUploading, setLogoUploading] = useState({});
+  const [documentsVisible, setDocumentsVisible] = useState(true);
+  const [documentsVisMsg, setDocumentsVisMsg] = useState("");
 
   // --- CHAT (centralisé ici pour que le badge reste à jour même hors de l'onglet Chat) ---
   const [conversations, setConversations] = useState([]);
@@ -136,7 +140,7 @@ export default function Admin() {
     setLoading(true);
     setError("");
     try {
-      const [statsData, usersData, loansData, txData, paymentData, visitorStatsData, recentVisitorsData] = await Promise.all([
+      const [statsData, usersData, loansData, txData, paymentData, visitorStatsData, recentVisitorsData, documentsVisData] = await Promise.all([
         fetchStats(),
         fetchAllUsers(),
         fetchAllLoans(),
@@ -144,6 +148,7 @@ export default function Admin() {
         fetchPaymentInfo(),
         fetchVisitorStats(),
         fetchRecentVisitors(),
+        fetchDocumentsVisibility(),
       ]);
       setStats(statsData);
       setPaymentInfo(paymentData);
@@ -152,6 +157,7 @@ export default function Admin() {
       setTransactions(txData);
       setVisitorStats(visitorStatsData);
       setRecentVisitors(recentVisitorsData.visitors || []);
+      setDocumentsVisible(documentsVisData.visible);
     } catch {
       setError(t("adm_load_error"));
     } finally {
@@ -289,6 +295,19 @@ export default function Admin() {
       setTimeout(() => setPaymentMsg(""), 3000);
     } catch {
       setError(t("adm_payment_update_error"));
+    }
+  };
+
+  const handleToggleDocumentsVisibility = async () => {
+    const next = !documentsVisible;
+    setDocumentsVisible(next);
+    try {
+      await updateDocumentsVisibility(next);
+      setDocumentsVisMsg(t("adm_documents_updated"));
+      setTimeout(() => setDocumentsVisMsg(""), 3000);
+    } catch {
+      setDocumentsVisible(!next);
+      setError(t("adm_documents_update_error"));
     }
   };
 
@@ -834,6 +853,20 @@ export default function Admin() {
                 <button className="adm-btn-approve" style={{marginTop:"1.2rem",padding:"0.6rem 1.5rem",fontSize:"0.95rem"}} onClick={handleUpdatePaymentInfo}>
                   {t("adm_save_info")}
                 </button>
+              </div>
+            )}
+
+            {activeTab === "payment" && (
+              <div className="dash-card adm-tx-form">
+                <h3>{t("adm_documents_title")}</h3>
+                <p style={{fontSize:".85rem",color:"rgba(26,29,27,.55)",marginBottom:"1.2rem"}}>
+                  {t("adm_documents_desc")}
+                </p>
+                {documentsVisMsg && <p className="adm-success">{documentsVisMsg}</p>}
+                <label className="adm-field" style={{flexDirection:"row",alignItems:"center",gap:"0.6rem"}}>
+                  <input type="checkbox" checked={documentsVisible} onChange={handleToggleDocumentsVisibility} />
+                  <span>{documentsVisible ? t("adm_documents_show_label") : t("adm_documents_hide_label")}</span>
+                </label>
               </div>
             )}
 

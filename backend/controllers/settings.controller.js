@@ -42,4 +42,27 @@ const updatePaymentInfo = async (req, res) => {
   }
 };
 
-module.exports = { getPaymentInfo, updatePaymentInfo };
+const getDocumentsVisibility = async (req, res) => {
+  try {
+    const setting = await Settings.findOne({ key: "documentsVisibility" });
+    res.json({ visible: setting ? setting.value.visible : true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const updateDocumentsVisibility = async (req, res) => {
+  try {
+    const value = { visible: !!req.body.visible };
+    await Settings.findOneAndUpdate(
+      { key: "documentsVisibility" },
+      { value },
+      { upsert: true, new: true }
+    );
+    res.json({ message: "Visibilité de la section documents mise à jour.", value });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { getPaymentInfo, updatePaymentInfo, getDocumentsVisibility, updateDocumentsVisibility };

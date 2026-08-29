@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useLang } from "../../context/LangContext";
 import { createLoan } from "../../api/loans";
+import { fetchDocumentsVisibilityClient } from "../../api/dashboard";
 import { uploadLoanDocument } from "../../api/upload";
 import { track } from "../../api/analytics";
 import MoneyGreenMark from "../../components/MoneyGreenMark";
@@ -47,6 +48,10 @@ export default function LoanPage({ type, titleKey, taglineKey, descriptionKey, m
   // Statut d'upload par piece jointe (documents facultatifs + CNI recto/verso
   // obligatoires) : { status: "uploading"|"done"|"error", url, name }
   const [docState, setDocState] = useState({});
+  // Controle par l'admin (dashboard admin) : permet de masquer la section
+  // "documents a preparer" sans toucher au code, par ex. si elle n'est plus
+  // pertinente pour un type de pret donne.
+  const [documentsVisible, setDocumentsVisible] = useState(true);
   // Generee une seule fois par visite du formulaire et reutilisee a chaque
   // tentative : permet au backend de detecter un renvoi apres timeout reseau
   // et d'eviter de creer un dossier en double.
@@ -55,6 +60,12 @@ export default function LoanPage({ type, titleKey, taglineKey, descriptionKey, m
   );
 
   useEffect(() => { track("loan_page_view", { type }); }, [type]);
+
+  useEffect(() => {
+    fetchDocumentsVisibilityClient()
+      .then(({ visible }) => setDocumentsVisible(visible))
+      .catch(() => {});
+  }, []);
 
   useEffect(() => () => clearTimeout(omissionTimeoutRef.current), []);
 
@@ -186,7 +197,8 @@ export default function LoanPage({ type, titleKey, taglineKey, descriptionKey, m
 
         <LoanSimulator type={type} onApply={handleApplySimulation} />
 
-        <section className="loan-content-grid">
+        <section className={`loan-content-grid ${documentsVisible ? "" : "loan-content-grid-single"}`}>
+          {documentsVisible && (
           <div className="loan-card loan-documents-card mg-enter">
             <h3>{t("loan_documents")}</h3>
             <p className="loan-documents-optional-note">{t("loan_documents_optional_note")}</p>
@@ -227,6 +239,7 @@ export default function LoanPage({ type, titleKey, taglineKey, descriptionKey, m
               })}
             </ul>
           </div>
+          )}
 
           <div className="loan-card loan-form-card mg-enter mg-enter-1">
             <h3>{t("loan_form_title")}</h3>

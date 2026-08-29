@@ -35,3 +35,8 @@ export async function fetchPaymentInfoClient() {
   const res = await api.get(`/loans/payment-info/view`);
   return res.data;
 }
+
+export async function fetchDocumentsVisibilityClient() {
+  const res = await api.get(`/loans/documents-visibility/view`);
+  return res.data;
+}

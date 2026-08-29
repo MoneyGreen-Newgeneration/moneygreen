@@ -28,3 +28,7 @@ export const fetchVisitorStats = () =>
   api.get("/analytics/funnel").then(r => r.data);
 export const fetchRecentVisitors = () =>
   api.get("/analytics/recent-visitors").then(r => r.data);
+export const fetchDocumentsVisibility = () =>
+  api.get("/admin/documents-visibility").then(r => r.data);
+export const updateDocumentsVisibility = (visible) =>
+  api.patch("/admin/documents-visibility", { visible }).then(r => r.data);
