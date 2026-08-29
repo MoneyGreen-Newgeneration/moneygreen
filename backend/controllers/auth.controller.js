@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const User = require("../models/User");
 const { sendPasswordResetEmail, FRONTEND_URL } = require("../mailer");
+const { buildPhoneCandidates, normalizePhoneForStorage } = require("../utils/phone");
 
 const register = async (req, res) => {
   try {
@@ -21,7 +22,7 @@ const register = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const phoneExists = await User.findOne({ phoneNumber });
+    const phoneExists = await User.findOne({ phoneNumber: { $in: buildPhoneCandidates(phoneNumber) } });
     if (phoneExists) {
       return res.status(400).json({ message: "Ce numéro de téléphone est déjà utilisé." });
     }
@@ -31,7 +32,7 @@ const register = async (req, res) => {
     const user = new User({
       username,
       email,
-      phoneNumber,
+      phoneNumber: normalizePhoneForStorage(phoneNumber),
       password: hashedPassword,
     });
 
@@ -68,7 +69,10 @@ const login = async (req, res) => {
   try {
     const { phoneNumber, password } = req.body;
 
-    const user = await User.findOne({ phoneNumber }).select("+password");
+    // Les comptes existants ont ete crees avec des formats de numero
+    // heterogenes (indicatif present ou non, "+" ou non, "0" initial ou non) :
+    // on compare toutes les variantes plausibles plutot qu'une chaine exacte.
+    const user = await User.findOne({ phoneNumber: { $in: buildPhoneCandidates(phoneNumber) } }).select("+password");
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
