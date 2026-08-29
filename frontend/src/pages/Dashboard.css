@@ -211,12 +211,6 @@
   color: #b3261e;
 }
 
-.dash-charts-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.2rem;
-}
-
 .dash-bottom-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -314,7 +308,6 @@
     grid-template-columns: 1fr;
   }
 
-  .dash-charts-grid,
   .dash-bottom-grid {
     grid-template-columns: 1fr;
   }

@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
-  PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
-  BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  BarChart, Bar, Cell, Tooltip, ResponsiveContainer,
+  XAxis, YAxis, CartesianGrid,
 } from "recharts";
 import { useAuth } from "../context/AuthContext";
 import { useSocket } from "../context/SocketContext";
 import { useLang } from "../context/LangContext";
 import {
-  fetchBalance, fetchSummary, fetchTransactions,
+  fetchBalance, fetchTransactions,
   fetchUserLoans,
 } from "../api/dashboard";
 import MoneyGreenMark from "../components/MoneyGreenMark";
@@ -20,7 +20,16 @@ import DashboardNotice from "../components/DashboardNotice";
 import { track } from "../api/analytics";
 import "./Dashboard.css";
 
-const CATEGORY_COLORS = ["#1e8a3e","#3fc466","#15602b","#7bd9a0","#0d3d1d","#a8e8bd"];
+// Memes couleurs que les pastilles de statut affichees dans "Mes demandes de
+// pret" juste en dessous, pour que le graphique reste coherent avec le reste
+// du dashboard plutot que d'introduire une palette qui lui est propre.
+const LOAN_STATUS_COLORS = {
+  pending: "#8a6d00",
+  payment_required: "#e65100",
+  payment_done: "#1e8a3e",
+  approved: "#15602b",
+  rejected: "#a32d2d",
+};
 
 function formatFCFA(value) {
   return `${Math.round(value || 0).toLocaleString("fr-FR")} FCFA`;
@@ -32,7 +41,6 @@ export default function Dashboard() {
   const { t } = useLang();
   const [balance, setBalance] = useState({ income: 0, expense: 0, balance: 0 });
   const [menuOpen, setMenuOpen] = useState(false);
-  const [summary, setSummary] = useState({});
   const [transactions, setTransactions] = useState([]);
   const [loans, setLoans] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,12 +52,11 @@ export default function Dashboard() {
     setLoading(true);
     setError("");
     try {
-      const [balanceData, summaryData, transactionsData, loansData] = await Promise.all([
-        fetchBalance(userId), fetchSummary(userId),
+      const [balanceData, transactionsData, loansData] = await Promise.all([
+        fetchBalance(userId),
         fetchTransactions(userId), fetchUserLoans(userId),
       ]);
       setBalance(balanceData);
-      setSummary(summaryData);
       setTransactions(transactionsData);
       setLoans(loansData);
     } catch (err) {
@@ -104,16 +111,6 @@ export default function Dashboard() {
     return () => socket.off("loan_updated", handleLoanUpdated);
   }, [socket]);
 
-  const pieData = useMemo(
-    () => Object.entries(summary).map(([category, total]) => ({ name: category, value: total })),
-    [summary]
-  );
-
-  const barData = useMemo(() => [
-    { name: t("dash_income"), montant: balance.income },
-    { name: t("dash_expense"), montant: balance.expense },
-  ], [balance, t]);
-
   const handleLogout = () => { logout(); window.location.href = "/"; };
 
   const loanLabel = { auto: "Automobile", immobilier: "Immobilier", scolaire: "Scolaire", personnel: "Personnel" };
@@ -133,6 +130,19 @@ export default function Dashboard() {
     if (status === "payment_done") return "status-paid";
     return "status-pending";
   };
+
+  // Toujours les 5 statuts, meme a 0, pour visualiser la progression du
+  // dossier plutot que de ne montrer que les statuts deja atteints.
+  const loanStatusChartData = useMemo(() => {
+    const counts = { pending: 0, payment_required: 0, payment_done: 0, approved: 0, rejected: 0 };
+    loans.forEach((l) => { if (counts[l.status] !== undefined) counts[l.status] += 1; });
+    return Object.keys(counts).map((status) => ({
+      status,
+      label: loanStatusLabel(status),
+      count: counts[status],
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loans, t]);
 
   return (
     <div className="dash">
@@ -213,39 +223,25 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <section className="dash-charts-grid">
-          <div className="dash-card dash-chart-card mg-enter mg-enter-2">
-            <h3>{t("dash_chart_pie")}</h3>
-            {pieData.length === 0 ? (
-              <p className="dash-empty">{t("dash_no_tx_yet")}</p>
-            ) : (
-              <ResponsiveContainer width="100%" height={260}>
-                <PieChart>
-                  <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label={({ name }) => name}>
-                    {pieData.map((entry, index) => (
-                      <Cell key={entry.name} fill={CATEGORY_COLORS[index % CATEGORY_COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(value) => formatFCFA(value)} />
-                </PieChart>
-              </ResponsiveContainer>
-            )}
-          </div>
-          <div className="dash-card dash-chart-card mg-enter mg-enter-3">
-            <h3>{t("dash_chart_bar")}</h3>
+        <section className="dash-card dash-chart-card mg-enter mg-enter-2">
+          <h3>{t("dash_chart_loans")}</h3>
+          {loans.length === 0 ? (
+            <p className="dash-empty">{t("dash_chart_loans_empty")}</p>
+          ) : (
             <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={barData}>
+              <BarChart data={loanStatusChartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e8e6" />
-                <XAxis dataKey="name" stroke="#1a1d1b" />
+                <XAxis dataKey="label" stroke="#1a1d1b" />
                 <YAxis stroke="#1a1d1b" />
-                <Tooltip formatter={(value) => formatFCFA(value)} />
-                <Bar dataKey="montant" radius={[6, 6, 0, 0]}>
-                  <Cell fill="#1e8a3e" />
-                  <Cell fill="#1c1f1d" />
+                <Tooltip />
+                <Bar dataKey="count" radius={[6, 6, 0, 0]}>
+                  {loanStatusChartData.map((entry) => (
+                    <Cell key={entry.status} fill={LOAN_STATUS_COLORS[entry.status]} />
+                  ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-          </div>
+          )}
         </section>
 
         {loans.length > 0 && (
